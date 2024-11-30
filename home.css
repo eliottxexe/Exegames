@@ -7,7 +7,10 @@
 }
 
 body {
-    background-color: #121212;
+    background-image: url('Images/background.jpg'); /* Chemin vers l'image */
+    background-size: cover; /* L'image couvre tout l'écran */
+    background-repeat: no-repeat; /* Pas de répétition de l'image */
+    background-position: center; /* Centre l'image */
     color: #E0E0E0;
     font-size: 16px;
     line-height: 1.5;

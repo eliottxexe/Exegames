@@ -81,8 +81,9 @@
             lift: -10,
             velocity: 1,
             isJumping: false,
-            isInvincible: false, // Pour la chèvre
-            invincibleTime: 0,   // Compteur pour l'invincibilité
+            isInvincible: false,
+            invincibleTime: 0,
+            hp: 1, // Ajout du système de vie
         };
 
         const pipes = [];
@@ -119,13 +120,13 @@
             if (bird.y + bird.height > canvas.height) {
                 bird.y = canvas.height - bird.height;
                 bird.velocity = 0;
-                endGame();
+                loseLife();
             }
 
             if (bird.y < 0) {
                 bird.y = 0;
                 bird.velocity = 0;
-                endGame();
+                loseLife();
             }
 
             // Gérer le temps d'invincibilité
@@ -133,6 +134,7 @@
                 bird.invincibleTime--;
                 if (bird.invincibleTime <= 0) {
                     bird.isInvincible = false;
+                    bird.hp = 1; // Retour à 1 HP après l'invincibilité
                 }
             }
         }
@@ -159,61 +161,6 @@
             offScreen() {
                 return this.x < -this.width;
             }
-
-            // Retourne la zone où un item ne doit pas apparaître
-            getOccupiedArea() {
-                return { top: this.top, bottom: this.bottom };
-            }
-        }
-
-        class Item {
-            constructor() {
-                this.x = canvas.width;
-                this.y = Math.floor(Math.random() * (canvas.height - 100)) + 50;
-                this.width = 30;
-                this.height = 30;
-                this.type = Math.random() < 0.5 ? 'point' : (Math.random() < 0.5 ? 'bluePoint' : 'rarePoint');
-                if (Math.random() < 0.1) this.type = 'goat'; // 10% chance for a goat item
-                this.color = this.type === 'point' ? 'yellow' : (this.type === 'bluePoint' ? 'blue' : 'purple');
-            }
-
-            draw() {
-                if (this.type === 'goat') {
-                    ctx.drawImage(goatImage, this.x, this.y, this.width, this.height);
-                } else {
-                    ctx.fillStyle = this.color;
-                    ctx.fillRect(this.x, this.y, this.width, this.height);
-                }
-            }
-
-            update() {
-                this.x -= 5;
-            }
-
-            offScreen() {
-                return this.x < -this.width;
-            }
-        }
-
-        function createPipes() {
-            if (pipes.length === 0 || pipes[pipes.length - 1].x < canvas.width / 2) {
-                pipes.push(new Pipe());
-            }
-        }
-
-        function createItems() {
-            // Ne crée un item que si les tuyaux ont bougé assez loin pour permettre de le spawn
-            if (Math.random() < 0.02) { // 2% chance for an item to appear each frame
-                let validPosition = true;
-                let pipeArea = pipes[pipes.length - 1]?.getOccupiedArea();
-                if (pipeArea) {
-                    let itemY = Math.floor(Math.random() * (canvas.height - 100)) + 50;
-                    // Vérifier si l'item ne se trouve pas dans la zone occupée par les tuyaux
-                    if (itemY < pipeArea.top || itemY > pipeArea.bottom) {
-                        items.push(new Item());
-                    }
-                }
-            }
         }
 
         function updatePipes() {
@@ -227,28 +174,19 @@
 
                 if (bird.x < pipe.x + pipe.width && bird.x + bird.width > pipe.x) {
                     if (bird.y < pipe.top || bird.y + bird.height > pipe.bottom) {
-                        endGame();
+                        if (!bird.isInvincible) {
+                            loseLife();
+                        }
                     }
                 }
             });
         }
 
-        function updateItems() {
-            items.forEach((item, index) => {
-                item.update();
-
-                if (item.offScreen()) {
-                    items.splice(index, 1);
-                }
-
-                // Vérifier collision avec l'oiseau
-                if (bird.x < item.x + item.width && bird.x + bird.width > item.x) {
-                    if (bird.y < item.y + item.height && bird.y + bird.height > item.y) {
-                        handleItem(item);
-                        items.splice(index, 1);
-                    }
-                }
-            });
+        function loseLife() {
+            bird.hp--;
+            if (bird.hp <= 0) {
+                endGame();
+            }
         }
 
         function handleItem(item) {
@@ -261,21 +199,8 @@
             } else if (item.type === 'goat') {
                 bird.isInvincible = true;
                 bird.invincibleTime = 300; // 15 secondes d'invincibilité
+                bird.hp = 1000000; // HP énorme pour l'invincibilité
             }
-        }
-
-        function drawPipes() {
-            pipes.forEach(pipe => pipe.draw());
-        }
-
-        function drawItems() {
-            items.forEach(item => item.draw());
-        }
-
-        function drawScore() {
-            ctx.fillStyle = 'white';
-            ctx.font = '20px Roboto';
-            ctx.fillText(`Score: ${score}`, 10, 30);
         }
 
         function endGame() {
@@ -290,6 +215,7 @@
             bird.velocity = 0;
             bird.isInvincible = false;
             bird.invincibleTime = 0;
+            bird.hp = 1; // Réinitialiser les HP
             pipes.length = 0;
             items.length = 0;
             score = 0;
@@ -304,25 +230,9 @@
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 drawBird();
                 updateBird();
-                createPipes();
-                createItems();
                 updatePipes();
-                updateItems();
-                drawPipes();
-                drawItems();
                 drawScore();
                 requestAnimationFrame(gameLoop);
-            } else {
-                ctx.fillStyle = 'red';
-                ctx.font = '50px Roboto';
-                const gameOverText = 'Game Over';
-                const textWidth = ctx.measureText(gameOverText).width;
-                ctx.fillText(gameOverText, (canvas.width - textWidth) / 2, canvas.height / 2);
-
-                ctx.font = '30px Roboto';
-                const scoreText = `Score: ${score}`;
-                const scoreWidth = ctx.measureText(scoreText).width;
-                ctx.fillText(scoreText, (canvas.width - scoreWidth) / 2, canvas.height / 2 + 50);
             }
         }
 

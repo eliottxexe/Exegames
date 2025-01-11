@@ -10,6 +10,7 @@
     <header>
         <h1>Exe Games</h1>
         <p>by Eliott Exe</p>
+        <button onclick="startMusic()">Activer la musique</button>
     </header>
 
     <!-- Lien vers les jeux -->
@@ -20,5 +21,16 @@
             <a href="Jeux/xvoid.html">X-Void</a>
         </section>
     </main>
+    <audio id="background-music" loop>
+        <source src="Musiques/home.mp3" type="audio/mpeg">
+    </audio>
+    <script>
+        function startMusic() {
+            const audio = document.getElementById("background-music");
+            setTimeout(function() {
+                audio.play();
+            }, 100);
+        }
+    </script>
 </body>
 </html>

@@ -147,3 +147,30 @@ section a:hover {
         font-size: 1.1rem;
     }
 }
+
+/* Bouton Activer la musique */
+button {
+    background-color: #FFD700; /* Couleur dorée similaire à celle du titre */
+    color: #1E1E1E; /* Texte en foncé pour contraster */
+    font-size: 1.2rem;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    margin-top: 20px; /* Espacement du bouton */
+}
+
+button:hover {
+    background-color: #E0E0E0; /* Sombre au survol */
+    color: #FFD700; /* Texte doré au survol */
+    transform: scale(1.05); /* Légère augmentation de la taille */
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.7); /* Effet de lumière dorée */
+}
+
+button:focus {
+    outline: none; /* Supprimer la bordure de focus par défaut */
+    box-shadow: 0 0 10px rgba(255, 215, 0, 1); /* Ajouter un halo doré autour du bouton lors du focus */
+}

@@ -6,10 +6,6 @@
     <title>Exe Games | X-Void</title>
     <style>
         body {
-            background-image: url('../Images/background.png');
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-position: center;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -29,15 +25,21 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
+        // Images
         const playerImage = new Image();
+        const backgroundImage = new Image();
+        const obstacleImage = new Image();
+
         playerImage.src = '../Images/xvoid_character.png';
+        backgroundImage.src = '../Images/xvoid_background.png';
+        obstacleImage.src = '../Images/xvoid_obstacle.png'; // Assurez-vous de mettre une image d'obstacle PNG
 
         let player = {
             x: canvas.width / 2,
-            y: canvas.height - 140, // x2
-            width: 100,             // x2
-            height: 200,            // x2
-            speed: 10,              // x2
+            y: canvas.height - 140,
+            width: 100,
+            height: 200,
+            speed: 10,
             dx: 0
         };
 
@@ -78,33 +80,23 @@
 
         class Obstacle {
             constructor() {
-                this.x = Math.random() * (canvas.width - 200) + 100; // x2
+                this.x = Math.random() * (canvas.width - 200) + 100;
                 this.y = 0;
-                this.width = 40;                                    // x2
-                this.height = 200;                                  // x2
-                this.color = 'red';
-                this.speed = 3;                                     // x2
-                this.angle = 0;
-                this.rotationSpeed = Math.random() * 0.03 + 0.01;
+                this.width = 80;  // Image width
+                this.height = 160; // Image height
+                this.speed = 3;
             }
 
             draw() {
-                ctx.save();
-                ctx.translate(this.x, this.y);
-                ctx.rotate(this.angle);
-                ctx.fillStyle = this.color;
-                ctx.fillRect(-this.width / 2, -this.height / 2, this.width, this.height);
-                ctx.restore();
+                ctx.drawImage(obstacleImage, this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
             }
 
             update() {
                 this.y += this.speed;
-                this.angle += this.rotationSpeed;
 
                 if (this.y - this.height / 2 > canvas.height) {
                     this.y = 0;
-                    this.x = Math.random() * (canvas.width - 200) + 100; // x2
-                    this.angle = 0;
+                    this.x = Math.random() * (canvas.width - 200) + 100;
                     score++;
                 }
             }
@@ -153,13 +145,13 @@
 
         function drawScore() {
             ctx.fillStyle = 'white';
-            ctx.font = '40px Arial'; // x2
-            ctx.fillText(`Score: ${score}`, 20, 40); // x2
+            ctx.font = '40px Arial';
+            ctx.fillText(`Score: ${score}`, 20, 40);
         }
 
         function restartGame() {
             player.x = canvas.width / 2;
-            player.y = canvas.height - 140; // x2
+            player.y = canvas.height - 140;
             player.dx = 0;
             obstacles = [];
             score = 0;
@@ -168,9 +160,14 @@
             gameLoop();
         }
 
+        function drawBackground() {
+            ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
+        }
+
         function gameLoop() {
             if (gameRunning) {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
+                drawBackground();
                 drawPlayer();
                 updatePlayer();
                 createObstacles();
@@ -180,15 +177,19 @@
                 requestAnimationFrame(gameLoop);
             } else {
                 ctx.fillStyle = 'red';
-                ctx.font = '100px Arial'; // x2
-                ctx.fillText('Game Over', canvas.width / 2 - 300, canvas.height / 2); // x2
-                ctx.font = '60px Arial'; // x2
-                ctx.fillText(`Score: ${score}`, canvas.width / 2 - 100, canvas.height / 2 + 100); // x2
+                ctx.font = '100px Arial';
+                ctx.fillText('Game Over', canvas.width / 2 - 300, canvas.height / 2);
+                ctx.font = '60px Arial';
+                ctx.fillText(`Score: ${score}`, canvas.width / 2 - 100, canvas.height / 2 + 100);
             }
         }
 
         playerImage.onload = () => {
-            gameLoop();
+            backgroundImage.onload = () => {
+                obstacleImage.onload = () => {
+                    gameLoop();
+                };
+            };
         };
     </script>
 </body>

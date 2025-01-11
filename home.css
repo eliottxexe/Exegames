@@ -1,3 +1,153 @@
+/* Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-image: url('Images/background.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    color: #E0E0E0;
+    font-size: 16px;
+    line-height: 1.5;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+h1, h3 {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+}
+
+/* Header */
+header {
+    text-align: center;
+    background-color: #1E1E1E;
+    border-radius: 12px;
+    padding: 40px 20px;
+    width: 100%;
+    max-width: 700px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+header h1 {
+    font-size: 3rem;
+    color: #FFD700;
+    text-transform: uppercase;
+}
+
+header p {
+    font-size: 1.2rem;
+    color: #B0B0B0;
+    font-style: italic;
+}
+
+/* Links Section */
+#link {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 30px;
+}
+
+#link a {
+    display: block;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#link img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#link img:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.7);
+}
+
+/* Main Content */
+main {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    margin-top: 50px;
+    width: 100%;
+    max-width: 900px;
+}
+
+section {
+    background-color: #1E1E1E;
+    border-radius: 8px;
+    padding: 30px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+section h3 {
+    font-size: 2rem;
+    color: #FFD700;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+section a {
+    display: block;
+    font-size: 1.2rem;
+    color: #E0E0E0;
+    text-decoration: none;
+    padding: 10px 0;
+    transition: color 0.3s ease, padding-left 0.3s ease;
+}
+
+section a:hover {
+    color: #FFD700;
+    padding-left: 10px;
+    text-shadow: 0 0 5px rgba(255, 215, 0, 0.8);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    header {
+        padding: 30px 15px;
+    }
+
+    header h1 {
+        font-size: 2.5rem;
+    }
+
+    #link {
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    main {
+        margin-top: 30px;
+    }
+
+    section {
+        padding: 20px;
+    }
+
+    section h3 {
+        font-size: 1.8rem;
+    }
+
+    section a {
+        font-size: 1.1rem;
+    }
+}
+
 /* Bouton Activer la musique */
 button {
     background-color: #FFD700; /* Couleur dorée similaire à celle du titre */

@@ -20,7 +20,7 @@
     </style>
 </head>
 <body>
-    <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <canvas id="gameCanvas" width="1600" height="1200"></canvas>
     <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
@@ -30,10 +30,10 @@
 
         let player = {
             x: canvas.width / 2,
-            y: canvas.height - 70,
-            width: 50,
-            height: 100,
-            speed: 5,
+            y: canvas.height - 140, // x2
+            width: 100,             // x2
+            height: 200,            // x2
+            speed: 10,              // x2
             dx: 0
         };
 
@@ -74,12 +74,12 @@
 
         class Obstacle {
             constructor() {
-                this.x = Math.random() * (canvas.width - 100) + 50;
+                this.x = Math.random() * (canvas.width - 200) + 100; // x2
                 this.y = 0;
-                this.width = 20;
-                this.height = 100;
+                this.width = 40;                                    // x2
+                this.height = 200;                                  // x2
                 this.color = 'red';
-                this.speed = 1.5; // Réduction de la vitesse des obstacles.
+                this.speed = 3;                                     // x2
                 this.angle = 0;
                 this.rotationSpeed = Math.random() * 0.03 + 0.01;
             }
@@ -99,7 +99,7 @@
 
                 if (this.y - this.height / 2 > canvas.height) {
                     this.y = 0;
-                    this.x = Math.random() * (canvas.width - 100) + 50;
+                    this.x = Math.random() * (canvas.width - 200) + 100; // x2
                     this.angle = 0;
                     score++;
                 }
@@ -149,13 +149,13 @@
 
         function drawScore() {
             ctx.fillStyle = 'white';
-            ctx.font = '20px Arial';
-            ctx.fillText(`Score: ${score}`, 10, 20);
+            ctx.font = '40px Arial'; // x2
+            ctx.fillText(`Score: ${score}`, 20, 40); // x2
         }
 
         function restartGame() {
             player.x = canvas.width / 2;
-            player.y = canvas.height - 70;
+            player.y = canvas.height - 140; // x2
             player.dx = 0;
             obstacles = [];
             score = 0;
@@ -176,10 +176,10 @@
                 requestAnimationFrame(gameLoop);
             } else {
                 ctx.fillStyle = 'red';
-                ctx.font = '50px Arial';
-                ctx.fillText('Game Over', canvas.width / 2 - 150, canvas.height / 2);
-                ctx.font = '30px Arial';
-                ctx.fillText(`Score: ${score}`, canvas.width / 2 - 50, canvas.height / 2 + 50);
+                ctx.font = '100px Arial'; // x2
+                ctx.fillText('Game Over', canvas.width / 2 - 300, canvas.height / 2); // x2
+                ctx.font = '60px Arial'; // x2
+                ctx.fillText(`Score: ${score}`, canvas.width / 2 - 100, canvas.height / 2 + 100); // x2
             }
         }
 

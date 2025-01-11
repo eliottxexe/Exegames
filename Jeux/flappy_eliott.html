@@ -218,6 +218,10 @@
                         if (bird.hp <= 0) {
                             endGame();
                         }
+                        // Réinitialiser hitPipeThisFrame après 1.5 secondes
+                        setTimeout(() => {
+                            hitPipeThisFrame = false;
+                        }, 1500);
                     }
                 }
             });
@@ -297,8 +301,8 @@
             pipes.length = 0;
             items.length = 0;
             score = 0;
+            hitPipeThisFrame = false; // Réinitialisation du flag
             gameRunning = true;
-            hitPipeThisFrame = false; // Réinitialisation du flag des dégâts
             document.getElementById('gameOverText').style.display = 'none';
             document.getElementById('restartButton').style.display = 'none';
             gameLoop();
@@ -306,7 +310,6 @@
 
         function gameLoop() {
             if (gameRunning) {
-                hitPipeThisFrame = false; // Réinitialisation du flag à chaque frame
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 drawBird();
                 updateBird();

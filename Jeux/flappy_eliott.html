@@ -70,7 +70,7 @@
         birdImage1.src = '../Images/bird1.png';
         birdImage2.src = '../Images/bird2.png';
         const goatImage = new Image();
-        goatImage.src = '../Images/goat.png';
+        goatImage.src = '../Images/goat.png'; // Image pour la chèvre
 
         const bird = {
             x: 100,
@@ -81,8 +81,8 @@
             lift: -10,
             velocity: 1,
             isJumping: false,
-            isInvincible: false,
-            invincibleTime: 0,
+            isInvincible: false, // Pour la chèvre
+            invincibleTime: 0,   // Compteur pour l'invincibilité
         };
 
         const pipes = [];
@@ -159,6 +159,11 @@
             offScreen() {
                 return this.x < -this.width;
             }
+
+            // Retourne la zone où un item ne doit pas apparaître
+            getOccupiedArea() {
+                return { top: this.top, bottom: this.bottom };
+            }
         }
 
         class Item {
@@ -197,8 +202,17 @@
         }
 
         function createItems() {
-            if (items.length === 0 || items[items.length - 1].x < canvas.width / 2) {
-                items.push(new Item());
+            // Ne crée un item que si les tuyaux ont bougé assez loin pour permettre de le spawn
+            if (Math.random() < 0.02) { // 2% chance for an item to appear each frame
+                let validPosition = true;
+                let pipeArea = pipes[pipes.length - 1]?.getOccupiedArea();
+                if (pipeArea) {
+                    let itemY = Math.floor(Math.random() * (canvas.height - 100)) + 50;
+                    // Vérifier si l'item ne se trouve pas dans la zone occupée par les tuyaux
+                    if (itemY < pipeArea.top || itemY > pipeArea.bottom) {
+                        items.push(new Item());
+                    }
+                }
             }
         }
 
@@ -246,7 +260,7 @@
                 score += 100;
             } else if (item.type === 'goat') {
                 bird.isInvincible = true;
-                bird.invincibleTime = 300;
+                bird.invincibleTime = 300; // 15 secondes d'invincibilité
             }
         }
 

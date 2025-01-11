@@ -7,10 +7,10 @@
 }
 
 body {
-    background-image: url('Images/background.jpg'); /* Chemin vers l'image */
-    background-size: cover; /* L'image couvre tout l'écran */
-    background-repeat: no-repeat; /* Pas de répétition de l'image */
-    background-position: center; /* Centre l'image */
+    background-image: url('Images/background.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
     color: #E0E0E0;
     font-size: 16px;
     line-height: 1.5;

@@ -25,11 +25,14 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
+        const playerImage = new Image();
+        playerImage.src = '../Images/xvoid_character.png';
+
         let player = {
             x: canvas.width / 2,
-            y: canvas.height - 30,
-            radius: 15,
-            color: 'yellow',
+            y: canvas.height - 70,
+            width: 50,
+            height: 50,
             speed: 5,
             dx: 0
         };
@@ -54,22 +57,18 @@
         });
 
         function drawPlayer() {
-            ctx.beginPath();
-            ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
-            ctx.fillStyle = player.color;
-            ctx.fill();
-            ctx.closePath();
+            ctx.drawImage(playerImage, player.x - player.width / 2, player.y - player.height / 2, player.width, player.height);
         }
 
         function updatePlayer() {
             player.x += player.dx;
 
-            if (player.x - player.radius < 0) {
-                player.x = player.radius;
+            if (player.x - player.width / 2 < 0) {
+                player.x = player.width / 2;
             }
 
-            if (player.x + player.radius > canvas.width) {
-                player.x = canvas.width - player.radius;
+            if (player.x + player.width / 2 > canvas.width) {
+                player.x = canvas.width - player.width / 2;
             }
         }
 
@@ -80,9 +79,9 @@
                 this.width = 20;
                 this.height = 100;
                 this.color = 'red';
-                this.speed = 3;
+                this.speed = 1.5; // Réduction de la vitesse des obstacles.
                 this.angle = 0;
-                this.rotationSpeed = Math.random() * 0.05 + 0.01;
+                this.rotationSpeed = Math.random() * 0.03 + 0.01;
             }
 
             draw() {
@@ -108,7 +107,7 @@
         }
 
         function createObstacles() {
-            if (obstacles.length === 0 || obstacles[obstacles.length - 1].y > canvas.height / 4) {
+            if (obstacles.length === 0 || obstacles[obstacles.length - 1].y > canvas.height / 3) {
                 obstacles.push(new Obstacle());
             }
         }
@@ -137,15 +136,15 @@
         function detectCollision(player, obstacle) {
             let distX = Math.abs(player.x - obstacle.x);
             let distY = Math.abs(player.y - obstacle.y);
-            if (distX > (obstacle.width / 2 + player.radius)) { return false; }
-            if (distY > (obstacle.height / 2 + player.radius)) { return false; }
+            if (distX > (obstacle.width / 2 + player.width / 2)) { return false; }
+            if (distY > (obstacle.height / 2 + player.height / 2)) { return false; }
 
             if (distX <= (obstacle.width / 2)) { return true; }
             if (distY <= (obstacle.height / 2)) { return true; }
 
             let dx = distX - obstacle.width / 2;
             let dy = distY - obstacle.height / 2;
-            return (dx * dx + dy * dy <= (player.radius * player.radius));
+            return (dx * dx + dy * dy <= ((player.width / 2) * (player.width / 2)));
         }
 
         function drawScore() {
@@ -156,7 +155,7 @@
 
         function restartGame() {
             player.x = canvas.width / 2;
-            player.y = canvas.height - 30;
+            player.y = canvas.height - 70;
             player.dx = 0;
             obstacles = [];
             score = 0;
@@ -184,7 +183,9 @@
             }
         }
 
-        gameLoop();
+        playerImage.onload = () => {
+            gameLoop();
+        };
     </script>
 </body>
 </html>

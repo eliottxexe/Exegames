@@ -159,7 +159,7 @@
                 this.y = Math.floor(Math.random() * (canvas.height - 100)) + 50;
                 this.width = 30;
                 this.height = 30;
-                this.type = Math.random() < 0.1 ? 'goat' : 'point'; // 10% chance pour une chèvre
+                this.type = Math.random() < 0.01 ? 'goat' : 'point';
                 this.color = this.type === 'point' ? 'yellow' : null;
             }
 

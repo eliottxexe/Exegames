@@ -22,15 +22,19 @@
     </main>
 
     <!-- Musique en boucle -->
-    <audio id="background-music" muted loop>
+    <audio id="background-music" loop>
         <source src="Musiques/home.mp3" type="audio/mpeg">
     </audio>
 
+    <button onclick="startMusic()">Activer la musique</button>
+
     <script>
-        window.addEventListener('click', function() {
+        function startMusic() {
             const audio = document.getElementById("background-music");
-            audio.muted = false; // Désactive le mute
-        });
+            setTimeout(function() {
+                audio.play();
+            }, 2000);
+        }
     </script>
 </body>
 </html>

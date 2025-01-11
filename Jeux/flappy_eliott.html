@@ -200,6 +200,7 @@
                 if (pipe.offScreen()) {
                     pipes.splice(index, 1);
                     score++;
+                    checkScoreMilestone();
                 }
 
                 if (
@@ -240,13 +241,19 @@
         function handleItem(item) {
             if (item.type === 'point') {
                 score += 5;
+                checkScoreMilestone();
             } else if (item.type === 'goat') {
                 bird.isInvincible = true;
-                bird.hp = 1000000; // HP infini pour le mode invincible
                 setTimeout(() => {
                     bird.isInvincible = false;
-                    bird.hp = 1; // Retour à 1 HP après 10 secondes
                 }, 10000);
+            }
+        }
+
+        function checkScoreMilestone() {
+            if (score >= 100) {
+                bird.hp += 1;
+                score = 0;
             }
         }
 
@@ -264,6 +271,12 @@
             ctx.fillText(`Score: ${score}`, 10, 40);
         }
 
+        function drawHP() {
+            ctx.fillStyle = 'red';
+            ctx.font = '30px Roboto';
+            ctx.fillText(`HP: ${bird.hp}`, 10, 80);
+        }
+
         function endGame() {
             gameRunning = false;
             document.getElementById('gameOverText').style.display = 'block';
@@ -275,7 +288,6 @@
             bird.y = canvas.height / 2;
             bird.velocity = 0;
             bird.isInvincible = false;
-            bird.hp = 1;
             pipes.length = 0;
             items.length = 0;
             score = 0;
@@ -297,6 +309,7 @@
                 drawPipes();
                 drawItems();
                 drawScore();
+                drawHP();
                 requestAnimationFrame(gameLoop);
             }
         }

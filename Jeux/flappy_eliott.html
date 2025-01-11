@@ -91,6 +91,7 @@
         const pipeGap = 300;
         let score = 0;
         let gameRunning = true;
+        let hitPipeThisFrame = false; // Nouveau flag pour éviter plusieurs dégâts de tuyaux
 
         document.addEventListener('keydown', (e) => {
             if (e.code === 'Space' && gameRunning) {
@@ -151,6 +152,13 @@
             offScreen() {
                 return this.x < -this.width;
             }
+
+            // Ajout d'une méthode pour vérifier si le joueur entre en contact avec ce tuyau
+            checkCollision() {
+                return bird.x < this.x + this.width &&
+                    bird.x + bird.width > this.x &&
+                    (bird.y < this.top || bird.y + bird.height > this.bottom);
+            }
         }
 
         class Item {
@@ -203,13 +211,10 @@
                     checkScoreMilestone();
                 }
 
-                if (
-                    bird.x < pipe.x + pipe.width &&
-                    bird.x + bird.width > pipe.x &&
-                    (bird.y < pipe.top || bird.y + bird.height > pipe.bottom)
-                ) {
+                if (pipe.checkCollision() && !hitPipeThisFrame) {
                     if (!bird.isInvincible) {
                         bird.hp -= 1;
+                        hitPipeThisFrame = true; // Le joueur a subi des dégâts d'un tuyau
                         if (bird.hp <= 0) {
                             endGame();
                         }
@@ -253,7 +258,7 @@
         function checkScoreMilestone() {
             if (score >= 100) {
                 bird.hp += 1;
-                score = 0;
+                score -= 100; // Retirer 100 points au lieu de réinitialiser
             }
         }
 
@@ -293,6 +298,7 @@
             items.length = 0;
             score = 0;
             gameRunning = true;
+            hitPipeThisFrame = false; // Réinitialisation du flag des dégâts
             document.getElementById('gameOverText').style.display = 'none';
             document.getElementById('restartButton').style.display = 'none';
             gameLoop();
@@ -300,6 +306,7 @@
 
         function gameLoop() {
             if (gameRunning) {
+                hitPipeThisFrame = false; // Réinitialisation du flag à chaque frame
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 drawBird();
                 updateBird();

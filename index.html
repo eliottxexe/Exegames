@@ -26,6 +26,7 @@
         <source src="Musiques/home.mp3" type="audio/mpeg">
     </audio>
     <script>
+        gameSection.classList.remove("hidden");
         function startGame() {
             const audio = document.getElementById("background-music");
             const gameSection = document.getElementById("game-section");
@@ -35,7 +36,6 @@
             audio.play();
 
             // Afficher la section des jeux avec une animation
-            gameSection.classList.remove("hidden");
             gameSection.classList.add("fade-in");
 
             // Cacher le bouton "Jouer"

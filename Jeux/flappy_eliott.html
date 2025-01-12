@@ -23,18 +23,19 @@
         canvas {
             border: 2px solid #fff;
             background-color: #333;
+            display: none;
         }
 
         #gameContainer {
             text-align: center;
         }
 
-        #startButton, #restartButton {
+        #startButton {
             margin-top: 20px;
-            padding: 10px 20px;
-            font-size: 18px;
+            padding: 15px 30px;
+            font-size: 20px;
             color: #fff;
-            background-color: #4caf50;
+            background-color: #28a745;
             border: none;
             border-radius: 5px;
             cursor: pointer;
@@ -42,7 +43,7 @@
         }
 
         #startButton:hover {
-            background-color: #45a049;
+            background-color: #218838;
         }
 
         #restartButton {
@@ -75,12 +76,15 @@
         <canvas id="gameCanvas" width="1600" height="1200"></canvas>
         <div id="gameOverText">Game Over</div>
         <button id="restartButton">Restart</button>
-        <audio id="startAudio" src="../Musiques/flappy_eliott.mp3"></audio>
+        <button id="startButton">Lancer</button>
     </div>
+    <audio id="startAudio" src="../Audio/start.mp3"></audio>
     <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         const startButton = document.getElementById('startButton');
+        const restartButton = document.getElementById('restartButton');
+        const gameOverText = document.getElementById('gameOverText');
         const startAudio = document.getElementById('startAudio');
 
         // Images
@@ -109,17 +113,9 @@
         const pipeWidth = 70;
         const pipeGap = 300;
         let score = 0;
-        let gameRunning = true;
+        let gameRunning = false;
         let hitPipeThisFrame = false; // Nouveau flag pour éviter plusieurs dégâts de tuyaux
 
-        startButton.addEventListener('click', () => {
-            startAudio.play(); // Play audio
-            startButton.style.display = 'none'; // Hide start button
-            canvas.style.display = 'block'; // Show canvas
-            gameRunning = true; // Start game
-            gameLoop();
-        });
-        
         document.addEventListener('keydown', (e) => {
             if (e.code === 'Space' && gameRunning) {
                 bird.velocity = bird.lift;
@@ -133,7 +129,8 @@
             }
         });
 
-        document.getElementById('restartButton').addEventListener('click', restartGame);
+        restartButton.addEventListener('click', restartGame);
+        startButton.addEventListener('click', startGame);
 
         function drawBird() {
             const birdImage = bird.isJumping ? birdImage2 : birdImage1;
@@ -180,7 +177,6 @@
                 return this.x < -this.width;
             }
 
-            // Ajout d'une méthode pour vérifier si le joueur entre en contact avec ce tuyau
             checkCollision() {
                 return bird.x < this.x + this.width &&
                     bird.x + bird.width > this.x &&
@@ -223,7 +219,7 @@
         }
 
         function createItems() {
-            if (Math.random() < 0.02) { // 2% chance de créer un item par frame
+            if (Math.random() < 0.02) {
                 items.push(new Item());
             }
         }
@@ -241,11 +237,10 @@
                 if (pipe.checkCollision() && !hitPipeThisFrame) {
                     if (!bird.isInvincible) {
                         bird.hp -= 1;
-                        hitPipeThisFrame = true; // Le joueur a subi des dégâts d'un tuyau
+                        hitPipeThisFrame = true;
                         if (bird.hp <= 0) {
                             endGame();
                         }
-                        // Réinitialiser hitPipeThisFrame après 1.5 secondes
                         setTimeout(() => {
                             hitPipeThisFrame = false;
                         }, 1500);
@@ -289,7 +284,7 @@
         function checkScoreMilestone() {
             if (score >= 100) {
                 bird.hp += 1;
-                score -= 100; // Retirer 100 points au lieu de réinitialiser
+                score -= 100;
             }
         }
 
@@ -304,19 +299,19 @@
         function drawScore() {
             ctx.fillStyle = 'white';
             ctx.font = '30px Roboto';
-            ctx.fillText(Score: ${score}, 10, 40);
+            ctx.fillText(`Score: ${score}`, 10, 40);
         }
 
         function drawHP() {
             ctx.fillStyle = 'red';
             ctx.font = '30px Roboto';
-            ctx.fillText(HP: ${bird.hp}, 10, 80);
+            ctx.fillText(`HP: ${bird.hp}`, 10, 80);
         }
 
         function endGame() {
             gameRunning = false;
-            document.getElementById('gameOverText').style.display = 'block';
-            document.getElementById('restartButton').style.display = 'inline-block';
+            gameOverText.style.display = 'block';
+            restartButton.style.display = 'inline-block';
         }
 
         function restartGame() {
@@ -324,14 +319,22 @@
             bird.y = canvas.height / 2;
             bird.velocity = 0;
             bird.isInvincible = false;
-            bird.hp = 1; // Réinitialisation des HP à 1
+            bird.hp = 1;
             pipes.length = 0;
             items.length = 0;
             score = 0;
-            hitPipeThisFrame = false; // Réinitialisation du flag
+            hitPipeThisFrame = false;
             gameRunning = true;
-            document.getElementById('gameOverText').style.display = 'none';
-            document.getElementById('restartButton').style.display = 'none';
+            gameOverText.style.display = 'none';
+            restartButton.style.display = 'none';
+            gameLoop();
+        }
+
+        function startGame() {
+            startAudio.play();
+            startButton.style.display = 'none';
+            canvas.style.display = 'block';
+            gameRunning = true;
             gameLoop();
         }
 
@@ -353,7 +356,7 @@
         }
 
         birdImage1.onload = birdImage2.onload = goatImage.onload = () => {
-            gameLoop();
+            startButton.style.display = 'inline-block';
         };
     </script>
 </body>

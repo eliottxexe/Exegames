@@ -69,7 +69,7 @@
         <canvas id="gameCanvas" width="1600" height="1200"></canvas>
         <div id="gameOverText">Game Over</div>
         <button id="restartButton">Restart</button>
-        <audio id="startAudio" src="../Musiques/flappy_eliott.mp3" loop></audio>
+        <audio id="startAudio" src="../Musiques/flappy_eliott.mp3"></audio>
     </div>
     <script>
         const canvas = document.getElementById('gameCanvas');
@@ -255,6 +255,13 @@
             });
         }
 
+        function handleScore() {
+            if (score >= 100) {
+                bird.hp++;
+                score -= 100;
+            }
+        }
+
         function drawPipes() {
             pipes.forEach(pipe => pipe.draw());
         }
@@ -306,6 +313,7 @@
                 createItems();
                 updatePipes();
                 updateItems();
+                handleScore(); // Check and handle score-based HP gain
                 drawPipes();
                 drawItems();
                 drawScore();

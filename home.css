@@ -149,8 +149,8 @@ section a:hover {
 }
 
 button {
-    background-color: #FFD700; /* Couleur dorée similaire à celle du titre */
-    color: #1E1E1E; /* Texte en foncé pour contraster */
+    background-color: #FFD700;
+    color: #1E1E1E;
     font-size: 1.2rem;
     padding: 15px 30px;
     border: none;
@@ -159,17 +159,38 @@ button {
     transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    margin-top: 20px; /* Espacement du bouton */
+    margin-top: 20px;
 }
 
 button:hover {
-    background-color: #E0E0E0; /* Sombre au survol */
-    color: #FFD700; /* Texte doré au survol */
-    transform: scale(1.05); /* Légère augmentation de la taille */
-    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.7); /* Effet de lumière dorée */
+    background-color: #E0E0E0;
+    color: #FFD700;
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.7);
 }
 
 button:focus {
-    outline: none; /* Supprimer la bordure de focus par défaut */
-    box-shadow: 0 0 10px rgba(255, 215, 0, 1); /* Ajouter un halo doré autour du bouton lors du focus */
+    outline: none;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 1);
+}
+
+.hidden {
+    display: none;
+    opacity: 0;
+}
+
+.fade-in {
+    display: block;
+    animation: fadeIn 1s ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

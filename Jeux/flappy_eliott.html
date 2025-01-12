@@ -7,16 +7,12 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
     <style>
         body {
-            background-image: url('../Images/background.png');
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-position: center;
+            background-color: #000;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
-            background-color: #000;
             font-family: 'Roboto', sans-serif;
         }
 
@@ -95,7 +91,7 @@
         const goatImage = new Image();
         goatImage.src = '../Images/goat.png'; // Image de l'item chèvre
         const backgroundImage = new Image();
-        backgroundImage.src = '../Images/flappy_eliott_background.png';
+        backgroundImage.src = '../Images/flappy_eliott_background.png'; // Image de fond
 
         const bird = {
             x: 100,
@@ -342,8 +338,10 @@
 
         function gameLoop() {
             if (gameRunning) {
+                // Dessiner l'image de fond sur le canvas
                 ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Ensuite, dessiner le reste du jeu
                 drawBird();
                 updateBird();
                 createPipes();
@@ -358,7 +356,7 @@
             }
         }
 
-        birdImage1.onload = birdImage2.onload = goatImage.onload = () => {
+        birdImage1.onload = birdImage2.onload = goatImage.onload = backgroundImage.onload = () => {
             startButton.style.display = 'inline-block';
         };
     </script>

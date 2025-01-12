@@ -174,11 +174,13 @@ button:focus {
     box-shadow: 0 0 10px rgba(255, 215, 0, 1);
 }
 
+/* Masquer la section au début */
 .hidden {
     display: none;
     opacity: 0;
 }
 
+/* Animation d'apparition */
 .fade-in {
     display: block;
     animation: fadeIn 1s ease-in-out forwards;
@@ -194,3 +196,4 @@ button:focus {
         transform: translateY(0);
     }
 }
+

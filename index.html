@@ -10,26 +10,33 @@
     <header>
         <h1>Exe Games</h1>
         <p>by Eliott Exe</p>
-        <button onclick="startMusic()">Activer la musique</button>
+        <button id="play-button" onclick="startGame()">Jouer</button>
     </header>
 
     <!-- Lien vers les jeux -->
-    <main>
+    <main id="game-section" class="hidden">
         <section>
             <h3>Exe Games (Original)</h3>
             <a href="Jeux/flappy_eliott.html">Flappy Eliott</a>
             <a href="Jeux/xvoid.html">X-Void</a>
         </section>
     </main>
+
     <audio id="background-music" loop>
         <source src="Musiques/home.mp3" type="audio/mpeg">
     </audio>
     <script>
-        function startMusic() {
+        function startGame() {
             const audio = document.getElementById("background-music");
-            setTimeout(function() {
-                audio.play();
-            }, 100);
+            const gameSection = document.getElementById("game-section");
+            const playButton = document.getElementById("play-button");
+
+            audio.play();
+
+            gameSection.classList.remove("hidden");
+            gameSection.classList.add("fade-in");
+
+            playButton.style.display = "none";
         }
     </script>
 </body>

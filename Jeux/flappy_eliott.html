@@ -108,15 +108,16 @@
         let gameRunning = false;
         let hitPipeThisFrame = false;
 
-        // Game Start Button
+        // Start Button
         startButton.addEventListener('click', () => {
-            startAudio.play(); // Play audio
+            startAudio.play();
             startButton.style.display = 'none';
             canvas.style.display = 'block';
             gameRunning = true;
             gameLoop();
         });
 
+        // Spacebar controls
         document.addEventListener('keydown', (e) => {
             if (e.code === 'Space' && gameRunning) {
                 bird.velocity = bird.lift;
@@ -154,6 +155,126 @@
             }
         }
 
+        class Pipe {
+            constructor() {
+                this.x = canvas.width;
+                this.top = Math.random() * (canvas.height / 2) + 50;
+                this.bottom = this.top + pipeGap;
+                this.width = pipeWidth;
+            }
+
+            draw() {
+                ctx.fillStyle = 'green';
+                ctx.fillRect(this.x, 0, this.width, this.top);
+                ctx.fillRect(this.x, this.bottom, this.width, canvas.height - this.bottom);
+            }
+
+            update() {
+                this.x -= 5;
+            }
+
+            offScreen() {
+                return this.x < -this.width;
+            }
+
+            checkCollision() {
+                return bird.x < this.x + this.width &&
+                    bird.x + bird.width > this.x &&
+                    (bird.y < this.top || bird.y + bird.height > this.bottom);
+            }
+        }
+
+        class Item {
+            constructor() {
+                this.x = canvas.width;
+                this.y = Math.random() * (canvas.height - 100) + 50;
+                this.width = 30;
+                this.height = 30;
+                this.type = Math.random() < 0.01 ? 'goat' : 'point';
+            }
+
+            draw() {
+                if (this.type === 'goat') {
+                    ctx.drawImage(goatImage, this.x, this.y, this.width, this.height);
+                } else {
+                    ctx.fillStyle = 'yellow';
+                    ctx.fillRect(this.x, this.y, this.width, this.height);
+                }
+            }
+
+            update() {
+                this.x -= 5;
+            }
+
+            offScreen() {
+                return this.x < -this.width;
+            }
+        }
+
+        function createPipes() {
+            if (pipes.length === 0 || pipes[pipes.length - 1].x < canvas.width / 2) {
+                pipes.push(new Pipe());
+            }
+        }
+
+        function createItems() {
+            if (Math.random() < 0.02) {
+                items.push(new Item());
+            }
+        }
+
+        function updatePipes() {
+            pipes.forEach((pipe, index) => {
+                pipe.update();
+                if (pipe.offScreen()) {
+                    pipes.splice(index, 1);
+                    score++;
+                }
+                if (pipe.checkCollision() && !hitPipeThisFrame) {
+                    bird.hp--;
+                    hitPipeThisFrame = true;
+                    setTimeout(() => hitPipeThisFrame = false, 1500);
+                    if (bird.hp <= 0) endGame();
+                }
+            });
+        }
+
+        function updateItems() {
+            items.forEach((item, index) => {
+                item.update();
+                if (item.offScreen()) items.splice(index, 1);
+                if (bird.x < item.x + item.width && bird.x + bird.width > item.x &&
+                    bird.y < item.y + item.height && bird.y + bird.height > item.y) {
+                    if (item.type === 'point') score += 5;
+                    if (item.type === 'goat') {
+                        bird.isInvincible = true;
+                        setTimeout(() => bird.isInvincible = false, 10000);
+                    }
+                    items.splice(index, 1);
+                }
+            });
+        }
+
+        function drawPipes() {
+            pipes.forEach(pipe => pipe.draw());
+        }
+
+        function drawItems() {
+            items.forEach(item => item.draw());
+        }
+
+        function drawScore() {
+            ctx.fillStyle = 'white';
+            ctx.font = '30px Roboto';
+            ctx.fillText(`Score: ${score}`, 10, 40);
+        }
+
+        function drawHP() {
+            ctx.fillStyle = 'red';
+            ctx.font = '30px Roboto';
+            ctx.fillText(`HP: ${bird.hp}`, 10, 80);
+        }
+
         function endGame() {
             gameRunning = false;
             gameOverText.style.display = 'block';
@@ -164,15 +285,15 @@
             bird.x = 100;
             bird.y = canvas.height / 2;
             bird.velocity = 0;
-            bird.isInvincible = false;
             bird.hp = 1;
+            bird.isInvincible = false;
             pipes.length = 0;
             items.length = 0;
             score = 0;
             hitPipeThisFrame = false;
-            gameRunning = true;
             gameOverText.style.display = 'none';
             restartButton.style.display = 'none';
+            gameRunning = true;
             gameLoop();
         }
 
@@ -181,7 +302,14 @@
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 drawBird();
                 updateBird();
-                // Other game functions...
+                createPipes();
+                createItems();
+                updatePipes();
+                updateItems();
+                drawPipes();
+                drawItems();
+                drawScore();
+                drawHP();
                 requestAnimationFrame(gameLoop);
             }
         }

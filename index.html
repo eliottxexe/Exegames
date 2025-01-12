@@ -26,10 +26,10 @@
         <source src="Musiques/home.mp3" type="audio/mpeg">
     </audio>
     <script>
+        const gameSection = document.getElementById("game-section");
         gameSection.classList.remove("hidden");
         function startGame() {
             const audio = document.getElementById("background-music");
-            const gameSection = document.getElementById("game-section");
             const playButton = document.getElementById("play-button");
 
             // Lancer la musique

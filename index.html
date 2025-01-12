@@ -10,8 +10,12 @@
     <header>
         <h1>Exe Games</h1>
         <p>by Eliott Exe</p>
-        <button id="play-button" onclick="startGame()">Jouer</button>
     </header>
+
+    <!-- Bouton jouer -->
+    <div id="play-container">
+        <button id="play-button">Jouer</button>
+    </div>
 
     <!-- Lien vers les jeux -->
     <main id="game-section" class="hidden">
@@ -25,22 +29,23 @@
     <audio id="background-music" loop>
         <source src="Musiques/home.mp3" type="audio/mpeg">
     </audio>
+
     <script>
-        function startGame() {
-            const audio = document.getElementById("background-music");
-            const gameSection = document.getElementById("game-section");
-            const playButton = document.getElementById("play-button");
+        const playButton = document.getElementById("play-button");
+        const gameSection = document.getElementById("game-section");
+        const music = document.getElementById("background-music");
 
+        playButton.addEventListener("click", () => {
             // Lancer la musique
-            audio.play();
+            music.play();
 
-            // Afficher la section des jeux avec une animation
+            // Afficher les jeux avec une animation
             gameSection.classList.remove("hidden");
             gameSection.classList.add("fade-in");
 
-            // Cacher le bouton "Jouer"
-            playButton.style.display = "none";
-        }
+            // Masquer le bouton "Jouer"
+            playButton.parentElement.style.display = "none";
+        });
     </script>
 </body>
 </html>

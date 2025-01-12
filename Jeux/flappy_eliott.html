@@ -108,16 +108,15 @@
         let gameRunning = false;
         let hitPipeThisFrame = false;
 
-        // Start Button
+        // Game Start Button
         startButton.addEventListener('click', () => {
-            startAudio.play();
+            startAudio.play(); // Play audio
             startButton.style.display = 'none';
             canvas.style.display = 'block';
             gameRunning = true;
             gameLoop();
         });
 
-        // Spacebar controls
         document.addEventListener('keydown', (e) => {
             if (e.code === 'Space' && gameRunning) {
                 bird.velocity = bird.lift;
@@ -178,9 +177,11 @@
             }
 
             checkCollision() {
-                return bird.x < this.x + this.width &&
+                return (
+                    bird.x < this.x + this.width &&
                     bird.x + bird.width > this.x &&
-                    (bird.y < this.top || bird.y + bird.height > this.bottom);
+                    (bird.y < this.top || bird.y + bird.height > this.bottom)
+                );
             }
         }
 
@@ -226,15 +227,23 @@
         function updatePipes() {
             pipes.forEach((pipe, index) => {
                 pipe.update();
+
                 if (pipe.offScreen()) {
                     pipes.splice(index, 1);
                     score++;
                 }
+
                 if (pipe.checkCollision() && !hitPipeThisFrame) {
-                    bird.hp--;
-                    hitPipeThisFrame = true;
-                    setTimeout(() => hitPipeThisFrame = false, 1500);
-                    if (bird.hp <= 0) endGame();
+                    if (!bird.isInvincible) {
+                        bird.hp--;
+                        hitPipeThisFrame = true;
+                        if (bird.hp <= 0) {
+                            endGame();
+                        }
+                        setTimeout(() => {
+                            hitPipeThisFrame = false;
+                        }, 1500);
+                    }
                 }
             });
         }
@@ -242,44 +251,32 @@
         function updateItems() {
             items.forEach((item, index) => {
                 item.update();
-                if (item.offScreen()) items.splice(index, 1);
-                if (bird.x < item.x + item.width && bird.x + bird.width > item.x &&
-                    bird.y < item.y + item.height && bird.y + bird.height > item.y) {
-                    if (item.type === 'point') score += 5;
-                    if (item.type === 'goat') {
-                        bird.isInvincible = true;
-                        setTimeout(() => bird.isInvincible = false, 10000);
-                    }
+
+                if (item.offScreen()) {
+                    items.splice(index, 1);
+                }
+
+                if (
+                    bird.x < item.x + item.width &&
+                    bird.x + bird.width > item.x &&
+                    bird.y < item.y + item.height &&
+                    bird.y + bird.height > item.y
+                ) {
+                    handleItem(item);
                     items.splice(index, 1);
                 }
             });
         }
 
-        function handleScore() {
-            if (score >= 100) {
-                bird.hp++;
-                score -= 100;
+        function handleItem(item) {
+            if (item.type === 'point') {
+                score += 5;
+            } else if (item.type === 'goat') {
+                bird.isInvincible = true;
+                setTimeout(() => {
+                    bird.isInvincible = false;
+                }, 10000);
             }
-        }
-
-        function drawPipes() {
-            pipes.forEach(pipe => pipe.draw());
-        }
-
-        function drawItems() {
-            items.forEach(item => item.draw());
-        }
-
-        function drawScore() {
-            ctx.fillStyle = 'white';
-            ctx.font = '30px Roboto';
-            ctx.fillText(`Score: ${score}`, 10, 40);
-        }
-
-        function drawHP() {
-            ctx.fillStyle = 'red';
-            ctx.font = '30px Roboto';
-            ctx.fillText(`HP: ${bird.hp}`, 10, 80);
         }
 
         function endGame() {
@@ -297,10 +294,9 @@
             pipes.length = 0;
             items.length = 0;
             score = 0;
-            hitPipeThisFrame = false;
+            gameRunning = true;
             gameOverText.style.display = 'none';
             restartButton.style.display = 'none';
-            gameRunning = true;
             gameLoop();
         }
 
@@ -313,14 +309,19 @@
                 createItems();
                 updatePipes();
                 updateItems();
-                handleScore(); // Check and handle score-based HP gain
-                drawPipes();
-                drawItems();
-                drawScore();
-                drawHP();
+                pipes.forEach(pipe => pipe.draw());
+                items.forEach(item => item.draw());
+                ctx.fillStyle = 'white';
+                ctx.font = '30px Roboto';
+                ctx.fillText(`Score: ${score}`, 10, 40);
+                ctx.fillText(`HP: ${bird.hp}`, 10, 80);
                 requestAnimationFrame(gameLoop);
             }
         }
+
+        birdImage1.onload = birdImage2.onload = goatImage.onload = () => {
+            // Ready to start
+        };
     </script>
 </body>
 </html>

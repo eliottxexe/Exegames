@@ -31,11 +31,14 @@
             const gameSection = document.getElementById("game-section");
             const playButton = document.getElementById("play-button");
 
+            // Lancer la musique
             audio.play();
 
+            // Afficher la section des jeux avec une animation
             gameSection.classList.remove("hidden");
             gameSection.classList.add("fade-in");
 
+            // Cacher le bouton "Jouer"
             playButton.style.display = "none";
         }
     </script>

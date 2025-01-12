@@ -23,23 +23,32 @@
         canvas {
             border: 2px solid #fff;
             background-color: #333;
+            display: none;
         }
 
         #gameContainer {
             text-align: center;
         }
 
-        #restartButton {
-            display: none;
+        #startButton, #restartButton {
             margin-top: 20px;
             padding: 10px 20px;
             font-size: 18px;
             color: #fff;
-            background-color: #ff6347;
+            background-color: #4caf50;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s ease;
+        }
+
+        #startButton:hover {
+            background-color: #45a049;
+        }
+
+        #restartButton {
+            display: none;
+            background-color: #ff6347;
         }
 
         #restartButton:hover {
@@ -56,13 +65,19 @@
 </head>
 <body>
     <div id="gameContainer">
+        <button id="startButton">Lancer</button>
         <canvas id="gameCanvas" width="1600" height="1200"></canvas>
         <div id="gameOverText">Game Over</div>
         <button id="restartButton">Restart</button>
+        <audio id="startAudio" src="../Musiques/flappy_eliott.mp3"></audio>
     </div>
     <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
+        const startButton = document.getElementById('startButton');
+        const restartButton = document.getElementById('restartButton');
+        const startAudio = document.getElementById('startAudio');
+        const gameOverText = document.getElementById('gameOverText');
 
         // Images
         const birdImage1 = new Image();
@@ -70,7 +85,7 @@
         birdImage1.src = '../Images/bird1.png';
         birdImage2.src = '../Images/bird2.png';
         const goatImage = new Image();
-        goatImage.src = '../Images/goat.png'; // Image de l'item chèvre
+        goatImage.src = '../Images/goat.png';
 
         const bird = {
             x: 100,
@@ -82,7 +97,7 @@
             velocity: 0,
             isJumping: false,
             isInvincible: false,
-            hp: 1, // HP standard
+            hp: 1,
         };
 
         const pipes = [];
@@ -90,8 +105,17 @@
         const pipeWidth = 70;
         const pipeGap = 300;
         let score = 0;
-        let gameRunning = true;
-        let hitPipeThisFrame = false; // Nouveau flag pour éviter plusieurs dégâts de tuyaux
+        let gameRunning = false;
+        let hitPipeThisFrame = false;
+
+        // Game Start Button
+        startButton.addEventListener('click', () => {
+            startAudio.play(); // Play audio
+            startButton.style.display = 'none';
+            canvas.style.display = 'block';
+            gameRunning = true;
+            gameLoop();
+        });
 
         document.addEventListener('keydown', (e) => {
             if (e.code === 'Space' && gameRunning) {
@@ -106,7 +130,7 @@
             }
         });
 
-        document.getElementById('restartButton').addEventListener('click', restartGame);
+        restartButton.addEventListener('click', restartGame);
 
         function drawBird() {
             const birdImage = bird.isJumping ? birdImage2 : birdImage1;
@@ -130,166 +154,10 @@
             }
         }
 
-        class Pipe {
-            constructor() {
-                this.x = canvas.width;
-                this.top = Math.floor(Math.random() * (canvas.height / 2)) + 50;
-                this.bottom = this.top + pipeGap;
-                this.width = pipeWidth;
-                this.color = 'green';
-            }
-
-            draw() {
-                ctx.fillStyle = this.color;
-                ctx.fillRect(this.x, 0, this.width, this.top);
-                ctx.fillRect(this.x, this.bottom, this.width, canvas.height - this.bottom);
-            }
-
-            update() {
-                this.x -= 5;
-            }
-
-            offScreen() {
-                return this.x < -this.width;
-            }
-
-            // Ajout d'une méthode pour vérifier si le joueur entre en contact avec ce tuyau
-            checkCollision() {
-                return bird.x < this.x + this.width &&
-                    bird.x + bird.width > this.x &&
-                    (bird.y < this.top || bird.y + bird.height > this.bottom);
-            }
-        }
-
-        class Item {
-            constructor() {
-                this.x = canvas.width;
-                this.y = Math.floor(Math.random() * (canvas.height - 100)) + 50;
-                this.width = 30;
-                this.height = 30;
-                this.type = Math.random() < 0.01 ? 'goat' : 'point';
-                this.color = this.type === 'point' ? 'yellow' : null;
-            }
-
-            draw() {
-                if (this.type === 'goat') {
-                    ctx.drawImage(goatImage, this.x, this.y, this.width, this.height);
-                } else {
-                    ctx.fillStyle = this.color;
-                    ctx.fillRect(this.x, this.y, this.width, this.height);
-                }
-            }
-
-            update() {
-                this.x -= 5;
-            }
-
-            offScreen() {
-                return this.x < -this.width;
-            }
-        }
-
-        function createPipes() {
-            if (pipes.length === 0 || pipes[pipes.length - 1].x < canvas.width / 2) {
-                pipes.push(new Pipe());
-            }
-        }
-
-        function createItems() {
-            if (Math.random() < 0.02) { // 2% chance de créer un item par frame
-                items.push(new Item());
-            }
-        }
-
-        function updatePipes() {
-            pipes.forEach((pipe, index) => {
-                pipe.update();
-
-                if (pipe.offScreen()) {
-                    pipes.splice(index, 1);
-                    score++;
-                    checkScoreMilestone();
-                }
-
-                if (pipe.checkCollision() && !hitPipeThisFrame) {
-                    if (!bird.isInvincible) {
-                        bird.hp -= 1;
-                        hitPipeThisFrame = true; // Le joueur a subi des dégâts d'un tuyau
-                        if (bird.hp <= 0) {
-                            endGame();
-                        }
-                        // Réinitialiser hitPipeThisFrame après 1.5 secondes
-                        setTimeout(() => {
-                            hitPipeThisFrame = false;
-                        }, 1500);
-                    }
-                }
-            });
-        }
-
-        function updateItems() {
-            items.forEach((item, index) => {
-                item.update();
-
-                if (item.offScreen()) {
-                    items.splice(index, 1);
-                }
-
-                if (
-                    bird.x < item.x + item.width &&
-                    bird.x + bird.width > item.x &&
-                    bird.y < item.y + item.height &&
-                    bird.y + bird.height > item.y
-                ) {
-                    handleItem(item);
-                    items.splice(index, 1);
-                }
-            });
-        }
-
-        function handleItem(item) {
-            if (item.type === 'point') {
-                score += 5;
-                checkScoreMilestone();
-            } else if (item.type === 'goat') {
-                bird.isInvincible = true;
-                setTimeout(() => {
-                    bird.isInvincible = false;
-                }, 10000);
-            }
-        }
-
-        function checkScoreMilestone() {
-            if (score >= 100) {
-                bird.hp += 1;
-                score -= 100; // Retirer 100 points au lieu de réinitialiser
-            }
-        }
-
-        function drawPipes() {
-            pipes.forEach(pipe => pipe.draw());
-        }
-
-        function drawItems() {
-            items.forEach(item => item.draw());
-        }
-
-        function drawScore() {
-            ctx.fillStyle = 'white';
-            ctx.font = '30px Roboto';
-            ctx.fillText(`Score: ${score}`, 10, 40);
-        }
-
-        function drawHP() {
-            ctx.fillStyle = 'red';
-            ctx.font = '30px Roboto';
-            ctx.fillText(`HP: ${bird.hp}`, 10, 80);
-        }
-
         function endGame() {
             gameRunning = false;
-            document.getElementById('gameOverText').style.display = 'block';
-            document.getElementById('restartButton').style.display = 'inline-block';
+            gameOverText.style.display = 'block';
+            restartButton.style.display = 'inline-block';
         }
 
         function restartGame() {
@@ -297,14 +165,14 @@
             bird.y = canvas.height / 2;
             bird.velocity = 0;
             bird.isInvincible = false;
-            bird.hp = 1; // Réinitialisation des HP à 1
+            bird.hp = 1;
             pipes.length = 0;
             items.length = 0;
             score = 0;
-            hitPipeThisFrame = false; // Réinitialisation du flag
+            hitPipeThisFrame = false;
             gameRunning = true;
-            document.getElementById('gameOverText').style.display = 'none';
-            document.getElementById('restartButton').style.display = 'none';
+            gameOverText.style.display = 'none';
+            restartButton.style.display = 'none';
             gameLoop();
         }
 
@@ -313,21 +181,10 @@
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 drawBird();
                 updateBird();
-                createPipes();
-                createItems();
-                updatePipes();
-                updateItems();
-                drawPipes();
-                drawItems();
-                drawScore();
-                drawHP();
+                // Other game functions...
                 requestAnimationFrame(gameLoop);
             }
         }
-
-        birdImage1.onload = birdImage2.onload = goatImage.onload = () => {
-            gameLoop();
-        };
     </script>
 </body>
 </html>

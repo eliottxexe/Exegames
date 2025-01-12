@@ -94,6 +94,8 @@
         birdImage2.src = '../Images/bird2.png';
         const goatImage = new Image();
         goatImage.src = '../Images/goat.png'; // Image de l'item chèvre
+        const backgroundImage = new Image();
+        backgroundImage.src = '../Images/background.png';
 
         const bird = {
             x: 100,
@@ -131,6 +133,8 @@
 
         restartButton.addEventListener('click', restartGame);
         startButton.addEventListener('click', startGame);
+
+        ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
 
         function drawBird() {
             const birdImage = bird.isJumping ? birdImage2 : birdImage1;

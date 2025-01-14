@@ -53,9 +53,8 @@
         obstacleImage.src = '../Images/xvoid_obstacle1.png';
 
         // Sounds
-        const startSound = new Audio('../Musiques/xvoid_start.mp3');
-        const collisionSound = new Audio('../Musiques/xvoid_collision.mp3');
-        const pointSound = new Audio('../Musiques/xvoid_point.mp3');
+        const backgroundMusic = new Audio('../Musiques/xvoid.mp3'); // Background music
+        const collisionSound = new Audio('../Musiques/xvoid_collision.mp3'); // Collision sound
 
         let player = {
             x: canvas.width / 2,
@@ -74,9 +73,10 @@
         // Start the game when the button is clicked
         startButton.addEventListener('click', () => {
             if (!gameRunning) {
-                startSound.play();
                 gameRunning = true;
                 startButton.style.display = 'none';
+                backgroundMusic.loop = true; // Loop the background music
+                backgroundMusic.play(); // Start the background music
                 gameLoop();
             }
         });
@@ -131,7 +131,6 @@
                     this.y = 0;
                     this.x = Math.random() * (canvas.width - 200) + 100;
                     score++;
-                    pointSound.play();  // Play sound when a point is scored
                 }
             }
         }
@@ -151,7 +150,7 @@
                 }
 
                 if (detectCollision(player, obstacle)) {
-                    collisionSound.play();
+                    collisionSound.play(); // Play collision sound
                     gameRunning = false;
                     if (!restartTimeout) {
                         restartTimeout = setTimeout(restartGame, 3000);
@@ -193,6 +192,7 @@
             gameRunning = true;
             restartTimeout = null;
             startButton.style.display = 'none';
+            backgroundMusic.play(); // Ensure music continues when restarting
             gameLoop();
         }
 

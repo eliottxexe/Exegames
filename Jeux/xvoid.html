@@ -12,18 +12,36 @@
             height: 100vh;
             margin: 0;
             background-color: #000;
+            flex-direction: column;
         }
 
         canvas {
             border: 1px solid #fff;
+            display: block;
+        }
+
+        #startButton {
+            background-color: #4CAF50;
+            color: white;
+            font-size: 20px;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        #startButton:hover {
+            background-color: #45a049;
         }
     </style>
 </head>
 <body>
     <canvas id="gameCanvas" width="1600" height="1200"></canvas>
+    <button id="startButton">Lancer</button>
     <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
+        const startButton = document.getElementById('startButton');
 
         // Images
         const playerImage = new Image();
@@ -33,6 +51,11 @@
         playerImage.src = '../Images/xvoid_character.png';
         backgroundImage.src = '../Images/xvoid_background.png';
         obstacleImage.src = '../Images/xvoid_obstacle1.png';
+
+        // Sounds
+        const startSound = new Audio('../Sounds/xvoid_start.mp3');
+        const collisionSound = new Audio('../Sounds/xvoid_collision.mp3');
+        const pointSound = new Audio('../Sounds/xvoid_point.mp3');
 
         let player = {
             x: canvas.width / 2,
@@ -45,8 +68,18 @@
 
         let obstacles = [];
         let score = 0;
-        let gameRunning = true;
+        let gameRunning = false;
         let restartTimeout = null;
+
+        // Start the game when the button is clicked
+        startButton.addEventListener('click', () => {
+            if (!gameRunning) {
+                startSound.play();
+                gameRunning = true;
+                startButton.style.display = 'none';
+                gameLoop();
+            }
+        });
 
         document.addEventListener('keydown', (e) => {
             if (e.code === 'ArrowLeft') {
@@ -82,8 +115,8 @@
             constructor() {
                 this.x = Math.random() * (canvas.width - 200) + 100;
                 this.y = 0;
-                this.width = 80;  // Image width
-                this.height = 160; // Image height
+                this.width = 80;
+                this.height = 160;
                 this.speed = 3;
             }
 
@@ -98,6 +131,7 @@
                     this.y = 0;
                     this.x = Math.random() * (canvas.width - 200) + 100;
                     score++;
+                    pointSound.play();  // Play sound when a point is scored
                 }
             }
         }
@@ -117,6 +151,7 @@
                 }
 
                 if (detectCollision(player, obstacle)) {
+                    collisionSound.play();
                     gameRunning = false;
                     if (!restartTimeout) {
                         restartTimeout = setTimeout(restartGame, 3000);
@@ -157,12 +192,20 @@
             score = 0;
             gameRunning = true;
             restartTimeout = null;
+            startButton.style.display = 'none';
             gameLoop();
         }
 
         function drawBackground() {
             ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
         }
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth * 0.9;
+            canvas.height = window.innerHeight * 0.7;
+        }
+
+        window.addEventListener('resize', resizeCanvas);
 
         function gameLoop() {
             if (gameRunning) {
@@ -181,13 +224,14 @@
                 ctx.fillText('Game Over', canvas.width / 2 - 300, canvas.height / 2);
                 ctx.font = '60px Arial';
                 ctx.fillText(`Score: ${score}`, canvas.width / 2 - 100, canvas.height / 2 + 100);
+                startButton.style.display = 'block';  // Show start button after game over
             }
         }
 
         playerImage.onload = () => {
             backgroundImage.onload = () => {
                 obstacleImage.onload = () => {
-                    gameLoop();
+                    resizeCanvas(); // Resize canvas on load
                 };
             };
         };

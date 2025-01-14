@@ -20,17 +20,25 @@
             font-family: 'Roboto', sans-serif;
         }
 
+        #gameContainer {
+            text-align: center;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
         canvas {
             border: 2px solid #fff;
             background-color: #333;
-            display: none;
+            width: 90vw;
+            height: auto;
+            max-width: 800px;
         }
 
-        #gameContainer {
-            text-align: center;
-        }
-
-        #startButton, #restartButton {
+        button {
             margin-top: 20px;
             padding: 15px 30px;
             font-size: 20px;

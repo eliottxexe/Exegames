@@ -317,6 +317,67 @@
             ctx.fillText(`HP: ${bird.hp}`, 10, 80);
         }
 
+        class Enemy {
+            constructor() {
+                this.x = canvas.width;
+                this.y = Math.floor(Math.random() * (canvas.height - 100)) + 50; // Position aléatoire en Y
+                this.width = 40; // Taille de l'ennemi
+                this.height = 40;
+                this.speed = 2; // L'ennemi avance lentement
+            }
+
+            draw() {
+                ctx.fillStyle = 'red'; // Couleur de l'ennemi
+                ctx.fillRect(this.x, this.y, this.width, this.height); // Dessiner l'ennemi comme un carré rouge
+            }
+
+            update() {
+                this.x -= this.speed; // L'ennemi se déplace vers la gauche
+            }
+
+            offScreen() {
+                return this.x < -this.width; // Vérifie si l'ennemi est hors de l'écran
+            }
+
+            checkCollision() {
+                // Vérifie si l'ennemi touche l'oiseau
+                return bird.x < this.x + this.width &&
+                    bird.x + bird.width > this.x &&
+                    bird.y < this.y + this.height &&
+                    bird.y + bird.height > this.y;
+            }
+        }
+
+        const enemies = [];
+
+        function createEnemies() {
+            if (pipes.length > 50 && Math.random() < 0.02) { // Créer un ennemi aléatoirement à partir du tuyau 50
+                enemies.push(new Enemy());
+            }
+        }
+
+        function updateEnemies() {
+            enemies.forEach((enemy, index) => {
+                enemy.update();
+
+                if (enemy.offScreen()) {
+                    enemies.splice(index, 1); // Supprimer l'ennemi une fois qu'il est hors écran
+                }
+
+                if (enemy.checkCollision()) {
+                    bird.hp -= 1; // L'oiseau perd 1 HP
+                    setTimeout(() => {
+                        // Ajoutez ici une action après la collision si nécessaire (par exemple, un effet sonore)
+                    }, 500);
+                }
+            });
+        }
+
+        function drawEnemies() {
+            enemies.forEach(enemy => enemy.draw()); // Dessiner tous les ennemis
+        }
+
+
         function endGame() {
             gameRunning = false;
             gameOverText.style.display = 'block';
@@ -439,12 +500,15 @@
                 createPipes();
                 createItems();
                 createPortals();
+                createEnemies();
                 updatePipes();
                 updateItems();
                 updatePortals();
+                updateEnemies();
                 drawPipes();
                 drawItems();
                 drawPortals();
+                drawEnemies();
                 drawScore();
                 drawHP();
                 drawGravityIndicator();

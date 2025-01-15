@@ -228,7 +228,7 @@
         function updatePipes() {
             pipes.forEach((pipe, index) => {
                 pipe.update();
-                pipe.x -= 5 * direction;
+                pipe.x -= 3 * direction;
 
                 if ((direction === 1 && pipe.x < -pipe.width) || (direction === -1 && pipe.x > canvas.width)) {
                     pipes.splice(index, 1);

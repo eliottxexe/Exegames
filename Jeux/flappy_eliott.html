@@ -345,7 +345,7 @@
 
         let level = 1;
         let pipesPassed = 0;
-        let direction = 1; // 1 pour normal, -1 pour inversé
+        let direction = 1;
         const portalImage = new Image();
         portalImage.src = '../Images/portal.png';
 
@@ -404,7 +404,7 @@
         }
 
         function checkLevelProgress() {
-            if (pipesPassed >= 10) {
+            if (pipesPassed >= 20) {
                 level++;
                 pipesPassed = 0;
             }

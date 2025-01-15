@@ -248,6 +248,15 @@
                     }
                 }
             });
+            
+            pipe.x -= 5 * direction;
+
+            if ((direction === 1 && pipe.x < -pipe.width) || (direction === -1 && pipe.x > canvas.width)) {
+                pipes.splice(index, 1);
+                score++;
+                pipesPassed++;
+                checkLevelProgress();
+            }
         }
 
         function updateItems() {
@@ -404,19 +413,6 @@
                 level++;
                 pipesPassed = 0;
             }
-        }
-
-        function updatePipes() {
-            pipes.forEach((pipe, index) => {
-                pipe.x -= 5 * direction;
-
-                if ((direction === 1 && pipe.x < -pipe.width) || (direction === -1 && pipe.x > canvas.width)) {
-                    pipes.splice(index, 1);
-                    score++;
-                    pipesPassed++;
-                    checkLevelProgress();
-                }
-            });
         }
 
         function gameLoop() {

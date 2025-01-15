@@ -119,7 +119,11 @@
 
         document.addEventListener('keydown', (e) => {
             if (e.code === 'Space' && gameRunning) {
-                bird.velocity = bird.lift;
+                if (isGravityInverted) {
+                    bird.velocity = Math.abs(bird.lift); // Pousse vers le bas
+                } else {
+                    bird.velocity = bird.lift; // Pousse vers le haut (comportement normal)
+                }
                 bird.isJumping = true;
             }
         });

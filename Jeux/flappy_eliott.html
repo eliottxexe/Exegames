@@ -228,11 +228,14 @@
         function updatePipes() {
             pipes.forEach((pipe, index) => {
                 pipe.update();
+                pipe.x -= 5 * direction;
 
-                if (pipe.offScreen()) {
+                if ((direction === 1 && pipe.x < -pipe.width) || (direction === -1 && pipe.x > canvas.width)) {
                     pipes.splice(index, 1);
                     score++;
-                    checkScoreMilestone();
+                    pipesPassed++;
+                    checkLevelProgress();
+                    return;
                 }
 
                 if (pipe.checkCollision() && !hitPipeThisFrame) {
@@ -246,17 +249,10 @@
                             hitPipeThisFrame = false;
                         }, 1500);
                     }
-
-                pipe.x -= 5 * direction;
-
-                if ((direction === 1 && pipe.x < -pipe.width) || (direction === -1 && pipe.x > canvas.width)) {
-                    pipes.splice(index, 1);
-                    score++;
-                    pipesPassed++;
-                    checkLevelProgress();
                 }
             });
         }
+
 
         function updateItems() {
             items.forEach((item, index) => {

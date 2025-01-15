@@ -339,25 +339,103 @@
             gameLoop();
         }
 
+        let level = 1;
+        let pipesPassed = 0;
+        let direction = 1; // 1 pour normal, -1 pour inversé
+        const portalImage = new Image();
+        portalImage.src = '../Images/portal.png';
+
+        class Portal {
+            constructor() {
+                this.x = direction === 1 ? canvas.width : 0;
+                this.y = Math.floor(Math.random() * (canvas.height - 100)) + 50;
+                this.width = 50;
+                this.height = 100;
+            }
+
+            draw() {
+                ctx.drawImage(portalImage, this.x, this.y, this.width, this.height);
+            }
+
+            update() {
+                this.x -= 5 * direction;
+            }
+
+            checkCollision() {
+                return (
+                    bird.x < this.x + this.width &&
+                    bird.x + bird.width > this.x &&
+                    bird.y < this.y + this.height &&
+                    bird.y + bird.height > this.y
+                );
+            }
+        }
+
+        const portals = [];
+
+        function createPortals() {
+            if (level >= 2 && Math.random() < 0.01) {
+                portals.push(new Portal());
+            }
+        }
+
+        function updatePortals() {
+            portals.forEach((portal, index) => {
+                portal.update();
+
+                if (portal.x < -portal.width || portal.x > canvas.width) {
+                    portals.splice(index, 1);
+                }
+
+                if (portal.checkCollision()) {
+                    direction *= -1; // Inverser la direction
+                    portals.splice(index, 1);
+                    pipes.forEach(pipe => (pipe.x *= -1));
+                }
+            });
+        }
+
+        function drawPortals() {
+            portals.forEach(portal => portal.draw());
+        }
+
+        function checkLevelProgress() {
+            if (pipesPassed >= 100) {
+                level++;
+                pipesPassed = 0;
+            }
+        }
+
+        function updatePipes() {
+            pipes.forEach((pipe, index) => {
+                pipe.x -= 5 * direction;
+
+                if ((direction === 1 && pipe.x < -pipe.width) || (direction === -1 && pipe.x > canvas.width)) {
+                    pipes.splice(index, 1);
+                    score++;
+                    pipesPassed++;
+                    checkLevelProgress();
+                }
+            });
+        }
+
         function gameLoop() {
             if (gameRunning) {
-                // Dessiner l'image de fond sur le canvas
                 ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
-                
-                // Ensuite, dessiner le reste du jeu
                 drawBird();
                 updateBird();
                 createPipes();
-                createItems();
+                createPortals();
                 updatePipes();
-                updateItems();
+                updatePortals();
                 drawPipes();
-                drawItems();
+                drawPortals();
                 drawScore();
                 drawHP();
                 requestAnimationFrame(gameLoop);
             }
         }
+
 
         birdImage1.onload = birdImage2.onload = goatImage.onload = backgroundImage.onload = () => {
             startButton.style.display = 'inline-block';

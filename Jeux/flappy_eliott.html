@@ -520,6 +520,16 @@
         birdImage1.onload = birdImage2.onload = goatImage.onload = backgroundImage.onload = () => {
             startButton.style.display = 'inline-block';
         };
+
+        setTimeout(() => {
+            if (gameRunning) {
+                level = 3; // Passer au niveau 3
+                backgroundImage.src = '../Images/flappy_eliott_background2.png';
+                startAudio.pause();
+                startAudio.src = '../Musiques/flappy_eliott2.wav';
+                startAudio.play();
+            }
+        }, 123000);
     </script>
 </body>
 </html>

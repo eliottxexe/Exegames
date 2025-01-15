@@ -351,7 +351,7 @@
 
         class Portal {
             constructor() {
-                this.x = direction === 1 ? canvas.width : 0;
+                this.x = canvas.width;
                 this.y = Math.floor(Math.random() * (canvas.height - 100)) + 50;
                 this.width = 50;
                 this.height = 100;
@@ -362,7 +362,7 @@
             }
 
             update() {
-                this.x -= 5 * direction;
+                    this.x -= 5;
             }
 
             checkCollision() {
@@ -374,6 +374,9 @@
                 );
             }
         }
+
+        // Nouvelle variable pour gérer la gravité inversée
+        let isGravityInverted = false;
 
         const portals = [];
 
@@ -387,20 +390,34 @@
             portals.forEach((portal, index) => {
                 portal.update();
 
-                if (portal.x < -portal.width || portal.x > canvas.width) {
+                if (portal.x < -portal.width) {
                     portals.splice(index, 1);
                 }
 
                 if (portal.checkCollision()) {
-                    direction *= -1; // Inverser la direction
+                    isGravityInverted = !isGravityInverted; // Inversion de la gravité
+                    bird.gravity *= -1; // Change la direction de la gravité
                     portals.splice(index, 1);
-                    pipes.forEach(pipe => (pipe.x *= -1));
+
+                    // Effet temporaire : La gravité redevient normale après 7 secondes
+                    setTimeout(() => {
+                        isGravityInverted = false;
+                        bird.gravity = Math.abs(bird.gravity);
+                    }, 7000);
                 }
             });
         }
 
         function drawPortals() {
             portals.forEach(portal => portal.draw());
+        }
+
+        function drawGravityIndicator() {
+            if (isGravityInverted) {
+                ctx.fillStyle = "cyan";
+                ctx.font = "20px Roboto";
+                ctx.fillText("GRAVITÉ INVERSÉE", canvas.width - 200, 40);
+            }
         }
 
         function checkLevelProgress() {
@@ -426,6 +443,7 @@
                 drawPortals();
                 drawScore();
                 drawHP();
+                drawGravityIndicator();
                 requestAnimationFrame(gameLoop);
             }
         }

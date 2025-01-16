@@ -19,6 +19,12 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
+function drawGameObjects() {
+    bird.draw();
+    pipes.forEach(pipe => pipe.draw());
+    items.forEach(item => item.draw());
+}
+
 function startGame() {
     startAudio.play();
     startButton.style.display = 'none';

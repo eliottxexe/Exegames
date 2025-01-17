@@ -7,45 +7,241 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="home.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Pixelify Sans', sans-serif;
+        }
+
+        body {
+            background-image: url('Images/background0.png');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-attachment: fixed;
+            color: #E0E0E0;
+            font-size: 16px;
+            line-height: 1.5;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        h1, h3 {
+            font-weight: 700;
+        }
+
+        header {
+            text-align: center;
+            background-color: #1E1E1E;
+            border-radius: 12px;
+            padding: 40px 20px;
+            width: 100%;
+            max-width: 700px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        header h1 {
+            font-size: 3rem;
+            color: #FFD700;
+            text-transform: uppercase;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            color: #B0B0B0;
+            font-style: italic;
+        }
+
+        main {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            margin-top: 50px;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        section {
+            background-color: #1E1E1E;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        section h3 {
+            font-size: 2rem;
+            color: #FFD700;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        section a {
+            display: block;
+            font-size: 1.2rem;
+            color: #E0E0E0;
+            text-decoration: none;
+            padding: 10px 0;
+            text-align: center;
+            transition: color 0.3s ease, padding-left 0.3s ease;
+        }
+
+        section a:hover {
+            color: #FFD700;
+            padding-left: 10px;
+            text-shadow: 0 0 5px rgba(255, 215, 0, 0.8);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .fade-in {
+            animation: fadeIn 1s ease-in-out forwards;
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        #play-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 60vh;
+            width: 100%;
+        }
+
+        #play-button {
+            background-color: #FFD700;
+            color: #1E1E1E;
+            font-size: 1.5rem;
+            padding: 20px 40px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        #play-button:hover {
+            background-color: #E0E0E0;
+            color: #FFD700;
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.7);
+        }
+
+        #play-button:focus {
+            outline: none;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 1);
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 30px 15px;
+            }
+
+            header h1 {
+                font-size: 2.5rem;
+            }
+
+            main {
+                margin-top: 30px;
+            }
+
+            section {
+                padding: 20px;
+            }
+
+            section h3 {
+                font-size: 1.8rem;
+            }
+
+            section a {
+                font-size: 1.1rem;
+            }
+
+            #play-button {
+                font-size: 1.3rem;
+                padding: 18px 36px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                padding: 20px 10px;
+            }
+
+            header h1 {
+                font-size: 2rem;
+            }
+
+            header p {
+                font-size: 1rem;
+            }
+
+            #play-button {
+                font-size: 1.2rem;
+                padding: 15px 30px;
+            }
+
+            section {
+                padding: 15px;
+            }
+
+            section h3 {
+                font-size: 1.5rem;
+            }
+
+            section a {
+                font-size: 1rem;
+            }
+
+            #play-container {
+                min-height: 50vh;
+            }
+        }
+    </style>
 </head>
 <body>
     <header>
         <h1>Exe Games</h1>
         <p>by Eliott Exe</p>
     </header>
-
-    <!-- Bouton jouer -->
     <div id="play-container">
         <button id="play-button">Jouer</button>
     </div>
-
-    <!-- Lien vers les jeux -->
     <main id="game-section" class="hidden">
         <section>
             <h3>Exe Games (Original)</h3>
             <a href="Jeux/even_more.html">Even More</a>
         </section>
     </main>
-
     <audio id="background-music" loop>
         <source src="Musiques/home.mp3" type="audio/mpeg">
     </audio>
-
     <script>
         const playButton = document.getElementById("play-button");
         const gameSection = document.getElementById("game-section");
         const music = document.getElementById("background-music");
 
         playButton.addEventListener("click", () => {
-            // Lancer la musique
             music.play();
-
-            // Afficher les jeux avec une animation
             gameSection.classList.remove("hidden");
             gameSection.classList.add("fade-in");
-
-            // Masquer le bouton "Jouer"
             playButton.parentElement.style.display = "none";
         });
     </script>

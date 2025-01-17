@@ -16,9 +16,11 @@
         }
 
         body {
-            background: linear-gradient(120deg, #1E1E1E, #FFD700);
-            background-size: 400% 400%;
-            animation: gradientAnimation 10s ease infinite;
+            background-image: url('Images/background0.png');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-attachment: fixed;
             color: #E0E0E0;
             font-size: 16px;
             line-height: 1.5;
@@ -28,17 +30,18 @@
             align-items: center;
             min-height: 100vh;
             padding: 20px;
+            animation: moveBackground 10s infinite linear;
         }
 
-        @keyframes gradientAnimation {
+        @keyframes moveBackground {
             0% {
-                background-position: 0% 50%;
+                background-position: center;
             }
             50% {
-                background-position: 100% 50%;
+                background-position: right;
             }
             100% {
-                background-position: 0% 50%;
+                background-position: center;
             }
         }
 
@@ -54,19 +57,17 @@
             width: 100%;
             max-width: 700px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            animation: slideIn 1s ease-out forwards;
-            transform: translateY(-50px);
-            opacity: 0;
+            animation: slideDown 1.5s ease-out;
         }
 
-        @keyframes slideIn {
+        @keyframes slideDown {
             0% {
+                transform: translateY(-30px);
                 opacity: 0;
-                transform: translateY(-50px);
             }
             100% {
-                opacity: 1;
                 transform: translateY(0);
+                opacity: 1;
             }
         }
 
@@ -74,28 +75,24 @@
             font-size: 3rem;
             color: #FFD700;
             text-transform: uppercase;
+            animation: textZoomIn 1.5s ease-out;
+        }
+
+        @keyframes textZoomIn {
+            0% {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
         }
 
         header p {
             font-size: 1.2rem;
             color: #B0B0B0;
             font-style: italic;
-        }
-
-        #music-indicator {
-            font-size: 2rem;
-            color: #FFD700;
-            animation: pulse 1.5s infinite;
-            margin-top: 10px;
-        }
-
-        @keyframes pulse {
-            0%, 100% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.2);
-            }
         }
 
         main {
@@ -105,6 +102,18 @@
             margin-top: 50px;
             width: 100%;
             max-width: 900px;
+            animation: fadeInMain 2s ease-in-out;
+        }
+
+        @keyframes fadeInMain {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         section {
@@ -112,19 +121,17 @@
             border-radius: 8px;
             padding: 30px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            opacity: 0;
-            transform: scale(0.9);
-            animation: sectionReveal 0.8s ease-out forwards;
+            animation: fadeInSection 1.5s ease-out;
         }
 
-        @keyframes sectionReveal {
+        @keyframes fadeInSection {
             0% {
                 opacity: 0;
-                transform: scale(0.9);
+                transform: translateY(20px);
             }
             100% {
                 opacity: 1;
-                transform: scale(1);
+                transform: translateY(0);
             }
         }
 
@@ -143,30 +150,44 @@
             text-decoration: none;
             padding: 10px 0;
             text-align: center;
-            position: relative;
-            overflow: hidden;
             transition: color 0.3s ease, padding-left 0.3s ease;
+            animation: slideIn 1s ease-out;
         }
 
-        section a::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background-color: #FFD700;
-            transform: translateX(-100%);
-            transition: transform 0.3s ease-in-out;
+        @keyframes slideIn {
+            0% {
+                transform: translateX(-20px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateX(0);
+                opacity: 1;
+            }
         }
 
         section a:hover {
             color: #FFD700;
             padding-left: 10px;
+            text-shadow: 0 0 5px rgba(255, 215, 0, 0.8);
         }
 
-        section a:hover::after {
-            transform: translateX(0);
+        .hidden {
+            display: none;
+        }
+
+        .fade-in {
+            animation: fadeIn 1s ease-in-out forwards;
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         #play-container {
@@ -175,12 +196,18 @@
             align-items: center;
             min-height: 60vh;
             width: 100%;
-            transition: opacity 0.5s ease, transform 0.5s ease;
+            animation: fadeInContainer 2s ease-out;
         }
 
-        .hidden-container {
-            opacity: 0;
-            transform: translateY(-20px);
+        @keyframes fadeInContainer {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         #play-button {
@@ -206,13 +233,78 @@
             outline: none;
             box-shadow: 0 0 10px rgba(255, 215, 0, 1);
         }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 30px 15px;
+            }
+
+            header h1 {
+                font-size: 2.5rem;
+            }
+
+            main {
+                margin-top: 30px;
+            }
+
+            section {
+                padding: 20px;
+            }
+
+            section h3 {
+                font-size: 1.8rem;
+            }
+
+            section a {
+                font-size: 1.1rem;
+            }
+
+            #play-button {
+                font-size: 1.3rem;
+                padding: 18px 36px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                padding: 20px 10px;
+            }
+
+            header h1 {
+                font-size: 2rem;
+            }
+
+            header p {
+                font-size: 1rem;
+            }
+
+            #play-button {
+                font-size: 1.2rem;
+                padding: 15px 30px;
+            }
+
+            section {
+                padding: 15px;
+            }
+
+            section h3 {
+                font-size: 1.5rem;
+            }
+
+            section a {
+                font-size: 1rem;
+            }
+
+            #play-container {
+                min-height: 50vh;
+            }
+        }
     </style>
 </head>
 <body>
     <header>
         <h1>Exe Games</h1>
         <p>by Eliott Exe</p>
-        <div id="music-indicator" class="hidden">🎵</div>
     </header>
     <div id="play-container">
         <button id="play-button">Jouer</button>
@@ -229,18 +321,13 @@
     <script>
         const playButton = document.getElementById("play-button");
         const gameSection = document.getElementById("game-section");
-        const playContainer = document.getElementById("play-container");
         const music = document.getElementById("background-music");
-        const musicIndicator = document.getElementById("music-indicator");
 
         playButton.addEventListener("click", () => {
             music.play();
-            musicIndicator.classList.remove("hidden");
             gameSection.classList.remove("hidden");
-            playContainer.classList.add("hidden-container");
-            setTimeout(() => {
-                playContainer.style.display = "none";
-            }, 500);
+            gameSection.classList.add("fade-in");
+            playButton.parentElement.style.display = "none";
         });
     </script>
 </body>

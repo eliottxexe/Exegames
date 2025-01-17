@@ -373,7 +373,7 @@
                 this.y = Math.floor(Math.random() * (canvas.height - 100)) + 50;
                 this.width = 40;
                 this.height = 40;
-                this.speed = 8;
+                this.speed = 25;
             }
 
             draw() {
@@ -437,7 +437,7 @@
         const enemies = [];
 
         function createEnemies() {
-            if (level >= 2 && Math.random() < 0.0001) {
+            if (level >= 3 && Math.random() < 0.0001) {
                 enemies.push(new Enemy());
             }
         }

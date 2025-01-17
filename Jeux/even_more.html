@@ -124,15 +124,14 @@
         const gameOverText = document.getElementById('gameOverText');
         const startAudio = document.getElementById('startAudio');
 
-        // Images
         const birdImage1 = new Image();
         const birdImage2 = new Image();
         birdImage1.src = '../Images/bird0_1.png';
         birdImage2.src = '../Images/bird0_2.png';
         const goatImage = new Image();
-        goatImage.src = '../Images/goat.png'; // Image de l'item chèvre
+        goatImage.src = '../Images/goat.png';
         const backgroundImage = new Image();
-        backgroundImage.src = '../Images/flappy_eliott_background.png'; // Image de fond
+        backgroundImage.src = '../Images/flappy_eliott_background.png';
 
         const bird = {
             x: 100,
@@ -144,7 +143,7 @@
             velocity: 0,
             isJumping: false,
             isInvincible: false,
-            hp: 1, // HP standard
+            hp: 1,
         };
 
         const pipes = [];
@@ -153,7 +152,7 @@
         const pipeGap = 300;
         let score = 0;
         let gameRunning = false;
-        let hitPipeThisFrame = false; // Nouveau flag pour éviter plusieurs dégâts de tuyaux
+        let hitPipeThisFrame = false; 
 
         function hideIntroAndStartGame() {
             introContainer.style.display = 'none';
@@ -172,9 +171,9 @@
         document.addEventListener('keydown', (e) => {
             if (e.code === 'Space' && gameRunning) {
                 if (isGravityInverted) {
-                    bird.velocity = Math.abs(bird.lift); // Pousse vers le bas
+                    bird.velocity = Math.abs(bird.lift);
                 } else {
-                    bird.velocity = bird.lift; // Pousse vers le haut (comportement normal)
+                    bird.velocity = bird.lift;
                 }
                 bird.isJumping = true;
             }
@@ -372,61 +371,31 @@
         class Enemy {
             constructor() {
                 this.x = canvas.width;
-                this.y = Math.floor(Math.random() * (canvas.height - 100)) + 50; // Position aléatoire en Y
-                this.width = 40; // Taille de l'ennemi
+                this.y = Math.floor(Math.random() * (canvas.height - 100)) + 50;
+                this.width = 40;
                 this.height = 40;
-                this.speed = 2; // L'ennemi avance lentement
+                this.speed = 2;
             }
 
             draw() {
-                ctx.fillStyle = 'red'; // Couleur de l'ennemi
-                ctx.fillRect(this.x, this.y, this.width, this.height); // Dessiner l'ennemi comme un carré rouge
+                ctx.fillStyle = 'red';
+                ctx.fillRect(this.x, this.y, this.width, this.height);
             }
 
             update() {
-                this.x -= this.speed; // L'ennemi se déplace vers la gauche
+                this.x -= this.speed;
             }
 
             offScreen() {
-                return this.x < -this.width; // Vérifie si l'ennemi est hors de l'écran
+                return this.x < -this.width;
             }
 
             checkCollision() {
-                // Vérifie si l'ennemi touche l'oiseau
                 return bird.x < this.x + this.width &&
                     bird.x + bird.width > this.x &&
                     bird.y < this.y + this.height &&
                     bird.y + bird.height > this.y;
             }
-        }
-
-        const enemies = [];
-
-        function createEnemies() {
-            if (pipes.length > 50 && Math.random() < 25) { // Créer un ennemi aléatoirement à partir du tuyau 50
-                enemies.push(new Enemy());
-            }
-        }
-
-        function updateEnemies() {
-            enemies.forEach((enemy, index) => {
-                enemy.update();
-
-                if (enemy.offScreen()) {
-                    enemies.splice(index, 1); // Supprimer l'ennemi une fois qu'il est hors écran
-                }
-
-                if (enemy.checkCollision()) {
-                    bird.hp -= 1; // L'oiseau perd 1 HP
-                    setTimeout(() => {
-                        // Ajoutez ici une action après la collision si nécessaire (par exemple, un effet sonore)
-                    }, 500);
-                }
-            });
-        }
-
-        function drawEnemies() {
-            enemies.forEach(enemy => enemy.draw()); // Dessiner tous les ennemis
         }
 
 
@@ -466,6 +435,35 @@
         const portalImage = new Image();
         portalImage.src = '../Images/portal.png';
 
+        const enemies = [];
+
+        function createEnemies() {
+            if (level => 2 && Math.random() < 25) {
+                enemies.push(new Enemy());
+            }
+        }
+
+        function updateEnemies() {
+            enemies.forEach((enemy, index) => {
+                enemy.update();
+
+                if (enemy.offScreen()) {
+                    enemies.splice(index, 1);
+                }
+
+                if (enemy.checkCollision()) {
+                    bird.hp -= 1;
+                    setTimeout(() => {
+                        
+                    }, 500);
+                }
+            });
+        }
+
+        function drawEnemies() {
+            enemies.forEach(enemy => enemy.draw());
+        }
+
         class Portal {
             constructor() {
                 this.x = canvas.width;
@@ -492,7 +490,6 @@
             }
         }
 
-        // Nouvelle variable pour gérer la gravité inversée
         let isGravityInverted = false;
 
         const portals = [];
@@ -512,11 +509,10 @@
                 }
 
                 if (portal.checkCollision()) {
-                    isGravityInverted = !isGravityInverted; // Inversion de la gravité
-                    bird.gravity *= -1; // Change la direction de la gravité
+                    isGravityInverted = !isGravityInverted;
+                    bird.gravity *= -1;
                     portals.splice(index, 1);
 
-                    // Effet temporaire : La gravité redevient normale après 7 secondes
                     setTimeout(() => {
                         isGravityInverted = false;
                         bird.gravity = Math.abs(bird.gravity);
@@ -534,13 +530,6 @@
                 ctx.fillStyle = "cyan";
                 ctx.font = "20px Roboto";
                 ctx.fillText("GRAVITÉ INVERSÉE", canvas.width - 200, 40);
-            }
-        }
-
-        function checkLevelProgress() {
-            if (pipesPassed >= 20) {
-                level++;
-                pipesPassed = 0;
             }
         }
 
@@ -575,7 +564,7 @@
 
         setTimeout(() => {
             if (gameRunning) {
-                level = 3;
+                level = 2;
                 backgroundImage.src = '../Images/flappy_eliott_background2.png';
                 startAudio.pause();
                 startAudio.src = '../Musiques/flappy_eliott2.wav';
@@ -585,7 +574,7 @@
         
         setTimeout(() => {
             if (gameRunning) {
-                level = 4;
+                level = 3;
                 backgroundImage.src = '../Images/flappy_eliott_background3.jpg';
                 startAudio.pause();
                 startAudio.src = '../Musiques/flappy_eliott3.wav';

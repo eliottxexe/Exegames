@@ -101,6 +101,22 @@
             font-size: 50px;
             margin-top: 20px;
         }
+
+        #fullscreenButton {
+            margin-top: 20px;
+            padding: 15px 30px;
+            font-size: 20px;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #007bff;
+            transition: background-color 0.3s ease;
+        }
+
+        #fullscreenButton:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
@@ -109,6 +125,7 @@
         <div id="gameOverText">Game Over</div>
         <button id="restartButton">Restart</button>
         <button id="startButton">Lancer</button>
+        <button id="fullscreenButton">Plein écran</button>
     </div>
     <div id="introContainer">
         <video id="introVideo" width="800" autoplay>
@@ -192,6 +209,19 @@
 
         restartButton.addEventListener('click', restartGame);
         startButton.addEventListener('click', startGame);
+
+        const fullscreenButton = document.getElementById('fullscreenButton');
+
+        fullscreenButton.addEventListener('click', () => {
+            if (!document.fullscreenElement) {
+                canvas.requestFullscreen().catch(err => {
+                    console.error(`Error attempting to enable fullscreen mode: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        });
+
 
         function drawBird() {
             const birdImage = bird.isJumping ? birdImage2 : birdImage1;

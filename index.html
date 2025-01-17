@@ -30,19 +30,6 @@
             align-items: center;
             min-height: 100vh;
             padding: 20px;
-            animation: moveBackground 10s infinite linear;
-        }
-
-        @keyframes moveBackground {
-            0% {
-                background-position: center;
-            }
-            50% {
-                background-position: right;
-            }
-            100% {
-                background-position: center;
-            }
         }
 
         h1, h3 {
@@ -234,71 +221,47 @@
             box-shadow: 0 0 10px rgba(255, 215, 0, 1);
         }
 
-        @media (max-width: 768px) {
-            header {
-                padding: 30px 15px;
-            }
+        /* Particle Animation */
+        .particle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: rgba(255, 215, 0, 0.8);
+            border-radius: 50%;
+            animation: particleAnimation 2s infinite;
+        }
 
-            header h1 {
-                font-size: 2.5rem;
+        @keyframes particleAnimation {
+            0% {
+                transform: translate(0, 0);
+                opacity: 1;
             }
-
-            main {
-                margin-top: 30px;
-            }
-
-            section {
-                padding: 20px;
-            }
-
-            section h3 {
-                font-size: 1.8rem;
-            }
-
-            section a {
-                font-size: 1.1rem;
-            }
-
-            #play-button {
-                font-size: 1.3rem;
-                padding: 18px 36px;
+            100% {
+                transform: translate(calc(100vw * 0.5), calc(100vh * 0.5));
+                opacity: 0;
             }
         }
 
-        @media (max-width: 480px) {
-            header {
-                padding: 20px 10px;
-            }
+        /* More fun with a click effect */
+        .click-effect {
+            position: absolute;
+            border-radius: 50%;
+            background-color: rgba(255, 215, 0, 0.3);
+            pointer-events: none;
+            animation: clickEffect 0.6s ease-out;
+        }
 
-            header h1 {
-                font-size: 2rem;
+        @keyframes clickEffect {
+            0% {
+                transform: scale(0);
+                opacity: 1;
             }
-
-            header p {
-                font-size: 1rem;
-            }
-
-            #play-button {
-                font-size: 1.2rem;
-                padding: 15px 30px;
-            }
-
-            section {
-                padding: 15px;
-            }
-
-            section h3 {
-                font-size: 1.5rem;
-            }
-
-            section a {
-                font-size: 1rem;
-            }
-
-            #play-container {
-                min-height: 50vh;
+            100% {
+                transform: scale(4);
+                opacity: 0;
             }
         }
+
     </style>
 </head>
 <body>
@@ -328,6 +291,30 @@
             gameSection.classList.remove("hidden");
             gameSection.classList.add("fade-in");
             playButton.parentElement.style.display = "none";
+        });
+
+        // Particles effect
+        setInterval(() => {
+            const particle = document.createElement("div");
+            particle.classList.add("particle");
+            document.body.appendChild(particle);
+            particle.style.top = `${Math.random() * 100}vh`;
+            particle.style.left = `${Math.random() * 100}vw`;
+            setTimeout(() => {
+                particle.remove();
+            }, 2000);
+        }, 150);
+
+        // Click effect
+        document.body.addEventListener("click", (event) => {
+            const clickEffect = document.createElement("div");
+            clickEffect.classList.add("click-effect");
+            document.body.appendChild(clickEffect);
+            clickEffect.style.left = `${event.pageX - 25}px`;
+            clickEffect.style.top = `${event.pageY - 25}px`;
+            setTimeout(() => {
+                clickEffect.remove();
+            }, 600);
         });
     </script>
 </body>

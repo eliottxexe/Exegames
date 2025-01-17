@@ -362,12 +362,14 @@
 
         function drawScore() {
             ctx.fillStyle = 'white';
+            ctx.font = '30px "Pixelify Sans", sans-serif';
             ctx.font = '30px Roboto';
             ctx.fillText(`Score: ${score}`, 10, 40);
         }
 
         function drawHP() {
             ctx.fillStyle = 'red';
+            ctx.font = '30px "Pixelify Sans", sans-serif';
             ctx.font = '30px Roboto';
             ctx.fillText(`HP: ${bird.hp}`, 10, 80);
         }
@@ -532,6 +534,7 @@
         function drawGravityIndicator() {
             if (isGravityInverted) {
                 ctx.fillStyle = "cyan";
+                ctx.font = '20px "Pixelify Sans", sans-serif';
                 ctx.font = "20px Roboto";
                 ctx.fillText("GRAVITÉ INVERSÉE", canvas.width - 200, 40);
             }

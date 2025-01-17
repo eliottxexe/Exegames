@@ -296,7 +296,9 @@
                     if (!bird.isInvincible) {
                         bird.hp -= 1;
                         hitPipeThisFrame = true;
-                        
+                        if (bird.hp <= 0) {
+                            endGame();
+                        }
                         setTimeout(() => {
                             hitPipeThisFrame = false;
                         }, 1500);
@@ -450,7 +452,9 @@
 
                 if (enemy.checkCollision()) {
                     bird.hp -= 1;
-                    
+                    if (bird.hp <= 0) {
+                        endGame();
+                    }
                 }
             });
         }
@@ -550,10 +554,6 @@
                 drawGravityIndicator();
                 requestAnimationFrame(gameLoop);
             }
-        }
-
-        if (bird.hp <= 0) {
-            endGame();
         }
 
         birdImage1.onload = birdImage2.onload = goatImage.onload = backgroundImage.onload = () => {

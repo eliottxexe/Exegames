@@ -437,7 +437,7 @@
         const enemies = [];
 
         function createEnemies() {
-            if (level => 2 && Math.random() < 0.001) {
+            if (level >= 2 && Math.random() < 1) {
                 enemies.push(new Enemy());
             }
         }

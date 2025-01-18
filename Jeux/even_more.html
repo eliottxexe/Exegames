@@ -274,33 +274,42 @@
                 this.top = Math.floor(Math.random() * (canvas.height / 2)) + 50;
                 this.bottom = this.top + pipeGap;
                 this.width = pipeWidth;
+                this.glowAmount = 0.7;
             }
 
             draw() {
-                ctx.fillStyle = 'green';
-                ctx.strokeStyle = 'white';
-                ctx.lineWidth = 3;
+                const gradient = ctx.createLinearGradient(0, 0, 0, this.top);
+                gradient.addColorStop(0, '#4caf50');
+                gradient.addColorStop(1, '#2e8b57');
+        
+                ctx.shadowColor = `rgba(0, 255, 0, ${this.glowAmount})`;
+                ctx.shadowBlur = 20;
+
                 ctx.beginPath();
                 ctx.moveTo(this.x, 0);
                 ctx.lineTo(this.x + this.width, 0);
                 ctx.lineTo(this.x + this.width, this.top);
                 ctx.lineTo(this.x, this.top);
                 ctx.closePath();
+                ctx.fillStyle = gradient;
                 ctx.fill();
-                ctx.stroke();
-        
+
                 ctx.beginPath();
                 ctx.moveTo(this.x, this.bottom);
                 ctx.lineTo(this.x + this.width, this.bottom);
                 ctx.lineTo(this.x + this.width, canvas.height);
                 ctx.lineTo(this.x, canvas.height);
                 ctx.closePath();
+                ctx.fillStyle = gradient;
                 ctx.fill();
-                ctx.stroke();
-            }
 
+                ctx.shadowColor = 'rgba(0,0,0,0)';
+                ctx.shadowBlur = 0;
+            }
+            
             update() {
                 this.x -= 5;
+                this.glowAmount = 0.7 + Math.sin(Date.now() / 200) * 0.3;
             }
 
             offScreen() {

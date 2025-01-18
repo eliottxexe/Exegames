@@ -278,33 +278,30 @@
             }
 
             draw() {
-                const gradient = ctx.createLinearGradient(0, 0, 0, this.top);
-                gradient.addColorStop(0, '#4caf50');
-                gradient.addColorStop(1, '#2e8b57');
-        
+                const segmentHeight = 5;
+                const gradientColors = ['#4caf50', '#2e8b57'];
+                let gradientIndex = 0;
+
+                for (let i = 0; i < this.top; i += segmentHeight) {
+                    ctx.fillStyle = gradientColors[gradientIndex % gradientColors.length];
+                    ctx.fillRect(this.x, i, this.width, segmentHeight);
+                    gradientIndex++;
+                }
+
+                gradientIndex = 0;
+                for (let i = this.bottom; i < canvas.height; i += segmentHeight) {
+                    ctx.fillStyle = gradientColors[gradientIndex % gradientColors.length];
+                    ctx.fillRect(this.x, i, this.width, segmentHeight);
+                    gradientIndex++;
+                }
+
                 ctx.shadowColor = `rgba(0, 255, 0, ${this.glowAmount})`;
-                ctx.shadowBlur = 20;
+                ctx.shadowBlur = 0;
 
-                ctx.beginPath();
-                ctx.moveTo(this.x, 0);
-                ctx.lineTo(this.x + this.width, 0);
-                ctx.lineTo(this.x + this.width, this.top);
-                ctx.lineTo(this.x, this.top);
-                ctx.closePath();
-                ctx.fillStyle = gradient;
-                ctx.fill();
-
-                ctx.beginPath();
-                ctx.moveTo(this.x, this.bottom);
-                ctx.lineTo(this.x + this.width, this.bottom);
-                ctx.lineTo(this.x + this.width, canvas.height);
-                ctx.lineTo(this.x, canvas.height);
-                ctx.closePath();
-                ctx.fillStyle = gradient;
-                ctx.fill();
+                ctx.fillRect(this.x, 0, this.width, this.top);
+                ctx.fillRect(this.x, this.bottom, this.width, canvas.height - this.bottom);
 
                 ctx.shadowColor = 'rgba(0,0,0,0)';
-                ctx.shadowBlur = 0;
             }
             
             update() {

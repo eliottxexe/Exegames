@@ -174,6 +174,7 @@
         const pipeGap = 300;
         let score = 0;
         let gameRunning = false;
+        let isPaused = false;
         let hitPipeThisFrame = false; 
 
         function hideIntroAndStartGame() {
@@ -280,8 +281,11 @@
 
         class Item {
             constructor() {
-                this.x = canvas.width;
-                this.y = Math.floor(Math.random() * (canvas.height - 100)) + 50;
+                do {
+                    this.x = canvas.width;
+                    this.y = Math.floor(Math.random() * (canvas.height - 100)) + 50;
+                } while (isOverlappingWithPipes(this.x, this.y, 30, 30));
+
                 this.width = 30;
                 this.height = 30;
                 this.type = Math.random() < 0.01 ? 'goat' : 'point';
@@ -304,6 +308,7 @@
                 return this.x < -this.width;
             }
         }
+
 
         function createPipes() {
             if (pipes.length === 0 || pipes[pipes.length - 1].x < canvas.width / 2) {
@@ -412,6 +417,7 @@
                 this.width = 40;
                 this.height = 40;
                 this.speed = 25;
+                this.hasDamaged = false;
             }
 
             draw() {
@@ -433,8 +439,11 @@
                     bird.y < this.y + this.height &&
                     bird.y + bird.height > this.y;
             }
+            
+            resetDamageCooldown() {
+                this.hasDamaged = false;
+            }
         }
-
 
         function endGame() {
             gameRunning = false;
@@ -459,12 +468,20 @@
         }
 
         function startGame() {
-            startAudio.play();
-            startButton.style.display = 'none';
-            canvas.style.display = 'block';
-            gameRunning = true;
-            gameLoop();
+            if (isPaused) {
+                isPaused = false;
+                gameRunning = true;
+                startButton.style.display = 'none';
+                gameLoop();
+            } else {
+                startAudio.play();
+                startButton.style.display = 'none';
+                canvas.style.display = 'block';
+                gameRunning = true;
+                gameLoop();
+            }
         }
+
 
         let level = 1;
         let pipesPassed = 0;
@@ -492,10 +509,12 @@
 
                 if (enemy.checkCollision()) {
                     bird.hp -= 2;
+                    enemy.hasDamaged = true;
                     if (bird.hp <= 0) {
                         bird.hp = 0
                         endGame();
                     }
+                    setTimeout(() => enemy.resetDamageCooldown(), 1000);
                 }
             });
         }
@@ -506,8 +525,11 @@
 
         class Portal {
             constructor() {
-                this.x = canvas.width;
-                this.y = Math.floor(Math.random() * (canvas.height - 100)) + 50;
+                do {
+                    this.x = canvas.width;
+                    this.y = Math.floor(Math.random() * (canvas.height - 100)) + 50;
+                } while (isOverlappingWithPipes(this.x, this.y, 50, 100)); // Vérifie qu'il ne chevauche pas un pipe
+
                 this.width = 50;
                 this.height = 100;
             }
@@ -517,7 +539,7 @@
             }
 
             update() {
-                    this.x -= 5;
+                this.x -= 5;
             }
 
             checkCollision() {
@@ -529,6 +551,7 @@
                 );
             }
         }
+
 
         let isGravityInverted = false;
 
@@ -574,8 +597,19 @@
             }
         }
 
+        function isOverlappingWithPipes(x, y, width, height) {
+            return pipes.some(pipe => {
+                return (
+                    x < pipe.x + pipe.width &&
+                    x + width > pipe.x &&
+                    (y < pipe.top || y + height > pipe.bottom)
+                );
+            });
+        }
+
+
         function gameLoop() {
-            if (gameRunning) {
+            if (gameRunning && !isPaused) {
                 ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
                 drawBird();
                 updateBird();
@@ -598,6 +632,7 @@
             }
         }
 
+
         birdImage1.onload = birdImage2.onload = goatImage.onload = backgroundImage.onload = () => {
             startButton.style.display = 'inline-block';
         };
@@ -605,10 +640,37 @@
         function checkLevelChange() {
             if (pipesPassed >= levelThresholds[level - 1]) {
                 level++;
-                changeGameLevel(level);
+                pauseGameForLevelChange(level);
             }
         }
 
+        function pauseGameForLevelChange(newLevel) {
+            isPaused = true;
+            gameRunning = false;
+
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'white';
+            ctx.font = '50px "Pixelify Sans", sans-serif';
+            ctx.fillText(`Niveau ${newLevel}`, canvas.width / 2 - 150, canvas.height / 2);
+
+            startButton.style.display = 'inline-block';
+            startButton.textContent = 'Continuer';
+
+            if (newLevel === 2) {
+                backgroundImage.src = '../Images/flappy_eliott_background2.png';
+                startAudio.pause();
+                startAudio.src = '../Musiques/flappy_eliott2.wav';
+                startAudio.play();
+            } else if (newLevel === 3) {
+                backgroundImage.src = '../Images/flappy_eliott_background3.jpg';
+                startAudio.pause();
+                startAudio.src = '../Musiques/flappy_eliott3.wav';
+                startAudio.play();
+            }
+        }
+
+        
         function changeGameLevel(newLevel) {
             ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);

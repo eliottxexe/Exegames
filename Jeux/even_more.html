@@ -39,6 +39,10 @@
             text-align: center;
         }
 
+        button {
+            font-family: 'Pixelify Sans', sans-serif;
+        }
+
         #introContainer {
             display: flex;
             flex-direction: column;
@@ -64,10 +68,11 @@
             color: white;
             border: none;
             cursor: pointer;
+            font-family: 'Pixelify Sans', sans-serif;
         }
 
 
-        #startButton, #restartButton {
+        #startButton, #restartButton, #fullscreenButton {
             margin-top: 20px;
             padding: 15px 30px;
             font-size: 20px;
@@ -75,6 +80,7 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            font-family: 'Pixelify Sans', sans-serif;
             transition: background-color 0.3s ease;
         }
 
@@ -399,14 +405,12 @@
         function drawScore() {
             ctx.fillStyle = 'white';
             ctx.font = '30px "Pixelify Sans", sans-serif';
-            ctx.font = '30px Roboto';
             ctx.fillText(`Score: ${score}`, 10, 40);
         }
 
         function drawHP() {
             ctx.fillStyle = 'red';
             ctx.font = '30px "Pixelify Sans", sans-serif';
-            ctx.font = '30px Roboto';
             ctx.fillText(`HP: ${bird.hp}`, 10, 80);
         }
 

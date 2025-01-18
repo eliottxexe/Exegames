@@ -123,6 +123,22 @@
         #fullscreenButton:hover {
             background-color: #0056b3;
         }
+
+        .pipe {
+            border-radius: 10px; /* Bords arrondis */
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.7), 0 0 15px rgba(0, 255, 0, 0.5); /* Ombres pour effet lumineux */
+            background: linear-gradient(to bottom, #4caf50, #2e8b57); /* Dégradé vert */
+            animation: glow 1.5s infinite alternate; /* Animation de lumière */
+        }
+
+        @keyframes glow {
+            0% {
+                box-shadow: 0 0 5px rgba(0, 255, 0, 0.7), 0 0 10px rgba(0, 255, 0, 0.5);
+            }
+            100% {
+                box-shadow: 0 0 20px rgba(0, 255, 0, 1), 0 0 30px rgba(0, 255, 0, 0.7);
+            }
+        }
     </style>
 </head>
 <body>
@@ -258,13 +274,29 @@
                 this.top = Math.floor(Math.random() * (canvas.height / 2)) + 50;
                 this.bottom = this.top + pipeGap;
                 this.width = pipeWidth;
-                this.color = 'green';
             }
 
             draw() {
-                ctx.fillStyle = this.color;
-                ctx.fillRect(this.x, 0, this.width, this.top);
-                ctx.fillRect(this.x, this.bottom, this.width, canvas.height - this.bottom);
+                ctx.fillStyle = 'green';
+                ctx.strokeStyle = 'white';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(this.x, 0);
+                ctx.lineTo(this.x + this.width, 0);
+                ctx.lineTo(this.x + this.width, this.top);
+                ctx.lineTo(this.x, this.top);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+        
+                ctx.beginPath();
+                ctx.moveTo(this.x, this.bottom);
+                ctx.lineTo(this.x + this.width, this.bottom);
+                ctx.lineTo(this.x + this.width, canvas.height);
+                ctx.lineTo(this.x, canvas.height);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
             }
 
             update() {
@@ -281,6 +313,7 @@
                     (bird.y < this.top || bird.y + bird.height > this.bottom);
             }
         }
+
 
         const pointImage = new Image();
         pointImage.src = '../Images/point.png';

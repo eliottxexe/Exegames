@@ -335,6 +335,7 @@
                         bird.hp -= 1;
                         hitPipeThisFrame = true;
                         if (bird.hp <= 0) {
+                            bird.hp = 0
                             endGame();
                         }
                         setTimeout(() => {
@@ -491,8 +492,9 @@
                 }
 
                 if (enemy.checkCollision()) {
-                    bird.hp -= 1;
+                    bird.hp -= 2;
                     if (bird.hp <= 0) {
+                        bird.hp = 0
                         endGame();
                     }
                 }

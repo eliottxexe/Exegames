@@ -603,23 +603,51 @@
             startButton.style.display = 'inline-block';
         };
 
+        function showTransition(nextLevel) {
+            const transitionOverlay = document.createElement('div');
+            transitionOverlay.style.position = 'absolute';
+            transitionOverlay.style.top = 0;
+            transitionOverlay.style.left = 0;
+            transitionOverlay.style.width = '100%';
+            transitionOverlay.style.height = '100%';
+            transitionOverlay.style.backgroundColor = 'rgba(0, 0, 0, 0.9)';
+            transitionOverlay.style.color = 'white';
+            transitionOverlay.style.display = 'flex';
+            transitionOverlay.style.justifyContent = 'center';
+            transitionOverlay.style.alignItems = 'center';
+            transitionOverlay.style.fontSize = '50px';
+            transitionOverlay.style.zIndex = 1000;
+            transitionOverlay.innerText = `Niveau ${nextLevel}`;
+            document.body.appendChild(transitionOverlay);
+
+            setTimeout(() => {
+                transitionOverlay.remove();
+            }, 2000);
+        }
+
         setTimeout(() => {
             if (gameRunning) {
-                level = 2;
-                backgroundImage.src = '../Images/flappy_eliott_background2.png';
-                startAudio.pause();
-                startAudio.src = '../Musiques/flappy_eliott2.wav';
-                startAudio.play();
+                showTransition(2);
+                setTimeout(() => {
+                    level = 2;
+                    backgroundImage.src = '../Images/flappy_eliott_background2.png';
+                    startAudio.pause();
+                    startAudio.src = '../Musiques/flappy_eliott2.wav';
+                    startAudio.play();
+                }, 2000); // Change le niveau après la transition
             }
         }, 123000);
         
         setTimeout(() => {
             if (gameRunning) {
-                level = 3;
-                backgroundImage.src = '../Images/flappy_eliott_background3.jpg';
-                startAudio.pause();
-                startAudio.src = '../Musiques/flappy_eliott3.wav';
-                startAudio.play();
+                showTransition(3);
+                setTimeout(() => {
+                    level = 3;
+                    backgroundImage.src = '../Images/flappy_eliott_background3.jpg';
+                    startAudio.pause();
+                    startAudio.src = '../Musiques/flappy_eliott3.wav';
+                    startAudio.play();
+                }, 2000);
             }
         }, 250000);
     </script>
